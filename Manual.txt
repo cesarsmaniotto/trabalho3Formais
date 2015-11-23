@@ -1,0 +1,25 @@
+		==Manual de Instrunções - Trabalho 2==
+		Autores: Cesar Smaniotto Junior
+			 Luís Gustavo Lorgus Decker
+		         Wagner Gascho
+
+1) A linguagem 
+	A linguagem que implementamos é uma variante mais simples e limitada do C. As palavras reservadas são semelhantes 
+
+1.1) As palavras reservadas
+	for|new|float|int|const|final|static|double|char|bool|long|short|typedef|class|struct|namespace|using|if|else|while|return
+
+2) Um programa exemplo
+
+int a = 3 ;
+if ( a > 1 ) {
+a = 1 ;
+} else { 
+a = 2 } 
+double b = a + 4 * 2 ;
+char s = "stringsemespacos" ; 
+
+Note que todo lexema deve ser separado por espacos, inclusive os operadores de igualdade, chaves, e ponto e virgula
+
+
+

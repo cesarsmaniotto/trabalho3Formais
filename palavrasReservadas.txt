@@ -1,0 +1,1 @@
+for|new|float|int|const|final|static|double|char|bool|long|short|typedef|class|struct|namespace|using|#include|#ifdef|#endif|#define|if|else|while|return
