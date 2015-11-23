@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class TabelaDeSimbolos {
 
-	private Map<String, Token> palavrasReservadas;
-	private List<Pair<String, Token>> tokens;
+	private Map<String, TipoToken> palavrasReservadas;
+	private List<Token> tokens;
 
 	public TabelaDeSimbolos(List<String> palavrasReservadas) {
 
@@ -20,21 +20,21 @@ public class TabelaDeSimbolos {
 	private void adicionaPalavrasReservadas(List<String> palavrasReservadas) {
 
 		for (String pr : palavrasReservadas) {
-			this.palavrasReservadas.put(pr, Token.PALAVRA_RESERVADA);
+			this.palavrasReservadas.put(pr, TipoToken.PALAVRA_RESERVADA);
 		}
 
 	}
 
-	public void adicionaItem(String lexema, Token token) {
+	public void adicionaItem(String lexema, TipoToken token) {
 
 		if (palavrasReservadas.containsKey(lexema)) {
 			token = palavrasReservadas.get(lexema);
 		}
 
-		tokens.add(new Pair<String, Token>(lexema, token));
+		tokens.add(new Token(lexema, token));
 	}
 
-	public List<Pair<String, Token>> getTokens() {
+	public List<Token> getTokens() {
 		return tokens;
 	}
 

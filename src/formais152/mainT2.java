@@ -12,7 +12,7 @@ import formais152.Modelo.AnalisadorLexico;
 import formais152.Modelo.InputOutput;
 import formais152.Modelo.Pair;
 import formais152.Modelo.TabelaDeSimbolos;
-import formais152.Modelo.Token;
+import formais152.Modelo.TipoToken;
 
 /**
  * @author cesar
@@ -49,7 +49,7 @@ public class mainT2 {
 		//anal.montaTabelaDeSimbolos("int a = 3 ; if ( a > 1 ) { a = 1 ; } else { a = 2 } double b = a + 4 * 2 ; char s = \"stringsemespacos\" ;");
 
 		String output="";
-		for (Pair<String,Token> p :tabela.getTokens()){
+		for (Pair<String,TipoToken> p :tabela.getTokens()){
 			output += p.toString();
 			output+="\n";
 		}

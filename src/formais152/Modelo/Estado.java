@@ -15,7 +15,7 @@ public class Estado implements Comparable<Estado>, Serializable {
 
 	private final String transicaoParaErro = "ERRO";
 
-	private Token tipoToken;
+	private TipoToken tipoToken;
 
 	boolean deterministico = true;
 
@@ -36,7 +36,7 @@ public class Estado implements Comparable<Estado>, Serializable {
 		this.nome = nome;
 	}
 
-	public Estado(String nome, Token tipoToken) {
+	public Estado(String nome, TipoToken tipoToken) {
 		this.nome = nome;
 		this.tipoToken = tipoToken;
 	}
@@ -138,11 +138,11 @@ public class Estado implements Comparable<Estado>, Serializable {
 		this.terminal = terminal;
 	}
 
-	public Token getTipoToken() {
+	public TipoToken getTipoToken() {
 		return tipoToken;
 	}
 
-	public void setTipoToken(Token tipoToken) {
+	public void setTipoToken(TipoToken tipoToken) {
 		this.tipoToken = tipoToken;
 	}
 

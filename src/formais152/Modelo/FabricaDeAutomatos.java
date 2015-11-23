@@ -6,9 +6,9 @@ public class FabricaDeAutomatos {
 		Automato aut = new Automato();
 		String estInicCon = "estInicCon", estFinal1Con = "estFinal1Con", estFinal2Con = "estFinal2Con";
 
-		aut.addEstado(estInicCon, Token.CONSTANTE_NUMERICA);
-		aut.addEstado(estFinal1Con, Token.CONSTANTE_NUMERICA);
-		aut.addEstado(estFinal2Con, Token.CONSTANTE_NUMERICA);
+		aut.addEstado(estInicCon, TipoToken.CONSTANTE_NUMERICA);
+		aut.addEstado(estFinal1Con, TipoToken.CONSTANTE_NUMERICA);
+		aut.addEstado(estFinal2Con, TipoToken.CONSTANTE_NUMERICA);
 
 		aut.addEstadoFinal(estFinal1Con);
 		aut.addEstadoFinal(estFinal2Con);
@@ -37,9 +37,9 @@ public class FabricaDeAutomatos {
 		Automato aut = new Automato();
 		String esInicStr = "esInicStr", estIntermStr = "estIntermStr", esFinalStr = "esFinalStr";
 
-		aut.addEstado(esInicStr, Token.STRING);
-		aut.addEstado(estIntermStr, Token.STRING);
-		aut.addEstado(esFinalStr, Token.STRING);
+		aut.addEstado(esInicStr, TipoToken.STRING);
+		aut.addEstado(estIntermStr, TipoToken.STRING);
+		aut.addEstado(esFinalStr, TipoToken.STRING);
 
 		aut.addEstadoFinal(esFinalStr);
 
@@ -73,9 +73,9 @@ public class FabricaDeAutomatos {
 		Automato aut = new Automato();
 		String estInicialVar = "estInicialVar", estFinalVar = "estFinalVar";
 
-		aut.addEstado(estInicialVar, Token.IDENTIFICADOR);
+		aut.addEstado(estInicialVar, TipoToken.IDENTIFICADOR);
 
-		aut.addEstado(estFinalVar, Token.IDENTIFICADOR);
+		aut.addEstado(estFinalVar, TipoToken.IDENTIFICADOR);
 		aut.addEstadoFinal(estFinalVar);
 
 		try {
@@ -118,9 +118,9 @@ public class FabricaDeAutomatos {
 		Automato aut = new Automato();
 		String esInicOp = "esInicOp", esFinalOp1 = "esFinalOp1", esFinalOp2 = "esFinalOp2";
 
-		aut.addEstado(esInicOp, Token.OPERADOR);
-		aut.addEstado(esFinalOp1, Token.OPERADOR);
-		aut.addEstado(esFinalOp2, Token.OPERADOR);
+		aut.addEstado(esInicOp, TipoToken.OPERADOR);
+		aut.addEstado(esFinalOp1, TipoToken.OPERADOR);
+		aut.addEstado(esFinalOp2, TipoToken.OPERADOR);
 
 		aut.addEstadoFinal(esFinalOp1);
 		aut.addEstadoFinal(esFinalOp2);
@@ -146,8 +146,8 @@ public class FabricaDeAutomatos {
 		Automato aut = new Automato();
 		String esInicMar = "esInicMar", esFinalMar = "esFinalMar";
 
-		aut.addEstado(esInicMar, Token.MARGEM);
-		aut.addEstado(esFinalMar, Token.MARGEM);
+		aut.addEstado(esInicMar, TipoToken.MARGEM);
+		aut.addEstado(esFinalMar, TipoToken.MARGEM);
 
 		aut.addEstadoFinal(esFinalMar);
 
@@ -172,8 +172,8 @@ public class FabricaDeAutomatos {
 		Automato aut = new Automato();
 		String esInicSep = "esInicSep", esFinalSep = "esFinalSep";
 
-		aut.addEstado(esInicSep, Token.SEPARADOR);
-		aut.addEstado(esFinalSep, Token.SEPARADOR);
+		aut.addEstado(esInicSep, TipoToken.SEPARADOR);
+		aut.addEstado(esFinalSep, TipoToken.SEPARADOR);
 
 		aut.addEstadoFinal(esFinalSep);
 
@@ -201,7 +201,7 @@ public class FabricaDeAutomatos {
 
 		aut = aut.removerEpsilonTransicoes();
 
-		aut.getEstadoErro().setTipoToken(Token.ERRO);
+		aut.getEstadoErro().setTipoToken(TipoToken.ERRO);
 		aut = aut.completarEstadoErro();
 
 		return aut;

@@ -35,7 +35,7 @@ public class Automato implements Serializable {
 		estados.add(new Estado(nome));
 	}
 
-	public void addEstado(String nome, Token tipoToken) {
+	public void addEstado(String nome, TipoToken tipoToken) {
 		estados.add(new Estado(nome, tipoToken));
 	}
 
@@ -1103,10 +1103,10 @@ public class Automato implements Serializable {
 		return a.estados.size() == b.estados.size();
 	}
 
-	public Gramatica transformaEmGramatica() {
+	public GramaticaRegular transformaEmGramatica() {
 
 		if (!possuiEpsilonTransicao()) {
-			Gramatica gr = new Gramatica();
+			GramaticaRegular gr = new GramaticaRegular();
 
 			GeraSimbolosGramatica geraSimbolo = new GeraSimbolosGramatica();
 

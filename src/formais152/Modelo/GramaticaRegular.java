@@ -15,14 +15,14 @@ import formais152.Modelo.Excecoes.*;
  * @author cesar
  *
  */
-public class Gramatica {
+public class GramaticaRegular {
 
 	private HashMap<String, HashSet<String>> producoes;
 	private HashSet<String> simbolosTerminais;
 	private HashSet<String> simbolosNaoTerminais;
 	private String simboloInicial;
 
-	public Gramatica() {
+	public GramaticaRegular() {
 		producoes = new HashMap<String, HashSet<String>>();
 		simbolosNaoTerminais = new HashSet<String>();
 		simbolosTerminais = new HashSet<String>();

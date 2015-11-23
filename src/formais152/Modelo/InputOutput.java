@@ -39,10 +39,10 @@ public class InputOutput {
 		}
 	}
 
-	static public Gramatica criarGramatica(String location) {
+	static public GramaticaRegular criarGramatica(String location) {
 		BufferedReader br = null;
 
-		Gramatica gr = new Gramatica();
+		GramaticaRegular gr = new GramaticaRegular();
 		try {
 			br = new BufferedReader(new FileReader(location));
 

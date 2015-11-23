@@ -55,7 +55,7 @@ public class AnalisadorLexico {
 				if (estadoAtual.isTerminal()) {
 					tabela.adicionaItem(lexema, estadoAtual.getTipoToken());
 				} else {
-					tabela.adicionaItem(lexema, Token.ERRO);
+					tabela.adicionaItem(lexema, TipoToken.ERRO);
 				}
 
 				voltaAoEstadoInicial = true;

@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 import formais152.Modelo.Automato;
 import formais152.Modelo.Expressao;
 import formais152.Modelo.FabricaDeAutomatos;
-import formais152.Modelo.Gramatica;
+import formais152.Modelo.GramaticaRegular;
 import formais152.Modelo.InputOutput;
 
 public class main {
