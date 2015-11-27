@@ -14,6 +14,10 @@ public class ProducaoGLC {
 	public ProducaoGLC() {
 		simbolos = new ArrayList<>();
 	}
+	
+	public ProducaoGLC(ArrayList<SimboloGLC> simbolos){
+		this.simbolos = simbolos;
+	}
 
 	public void adicionaSimbolo(SimboloGLC simbolo) {
 		simbolos.add(simbolo);

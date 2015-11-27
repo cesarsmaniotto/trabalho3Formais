@@ -72,12 +72,37 @@ public class SimboloGLC extends Pair<String, Boolean> {
 		return this.first;
 	}
 
-	public String getSimbolos() {
+	public String getSimbolo() {
 		return super.getFirst();
 	}
 
 	public boolean isTerminal() {
 		return super.getSecond();
+	}
+	
+	/* (non-Javadoc)
+	 * @see formais152.Modelo.Pair#toString()
+	 */
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return getSimbolo();
+	}
+	
+	/* (non-Javadoc)
+	 * @see formais152.Modelo.Pair#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object other) {
+		
+		if((other instanceof SimboloGLC) && ((SimboloGLC)other).getSimbolo().equals(this.getSimbolo())
+				
+				&& ((SimboloGLC)other).isTerminal() == this.isTerminal()){
+			return true;
+		}
+		
+		return false;
+		
 	}
 
 }
