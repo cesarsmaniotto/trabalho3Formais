@@ -31,6 +31,8 @@ public class ProducaoGLC {
 		}
 		return saida;
 	}
+	
+	
 
 	public boolean contemSimbolo(String simbolo) {
 		for (SimboloGLC simb : simbolos) {
@@ -48,6 +50,18 @@ public class ProducaoGLC {
 			}
 		}
 		return true;
+	}
+
+	public List<SimboloGLC> obterInverso() {
+		List<SimboloGLC> retorno = new ArrayList<>();
+		if (simbolos.isEmpty()) {
+			System.out.println("[WARNING] INVERSO DE PRODUCAO VAZIA!");
+			return new ArrayList<>();
+		}
+		for (int i = simbolos.size() - 1; i >= 0; i++) {
+			retorno.add(simbolos.get(i));
+		}
+		return retorno;
 	}
 
 }

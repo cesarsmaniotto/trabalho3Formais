@@ -47,6 +47,8 @@ public class GramaticaLivreContexto {
 		 */
 
 		// "Até que nao tenha mudancas"
+		// ====================================================================================
+
 		boolean mudanca = true;
 		while (mudanca) {
 			mudanca = false;
@@ -105,6 +107,10 @@ public class GramaticaLivreContexto {
 				}
 			} // Para cada cabeça de producao - > fim dos casos ABC com ABC
 				// gerando &
+
+			// ====================================================================================
+			// PRIMEIRO CASO OK!
+			// ====================================================================================
 
 			// Inicio do caso A->ABaX, em que A e B geram &
 			for (SimboloGLC cabecaProd : producoes.keySet()) {
@@ -176,6 +182,121 @@ public class GramaticaLivreContexto {
 			}
 
 		} // Enquanto houver mudancas
+			// O FIRST ta pronto. os casos 2 e 3 tao misturados
+	}
+
+	private void followRec(SimboloGLC simbolo) {
+		// n sei se vou usar isso
+	}
+
+	private void calculaFollow() {
+		if (!simboloInicial.isEmpty()) {
+
+			for (SimboloGLC simbolo : this.producoes.keySet()) {
+				if (simbolo.getFirst().equals(simboloInicial)) {
+					simbolo.adicionaFirst(new SimboloGLC("&", true));
+				}
+			}
+		}
+		/* Simbolo de final de pilha inserido no símbolo inicial da gramática */
+		boolean mudanca = true;
+		while (mudanca) {
+			mudanca = false;
+			/*
+			 * primeiro para todos os NT, depois pra todos os T (Pq eu quero,
+			 * não gostou me processa)
+			 */
+			for (SimboloGLC simboloAnalisando : producoes.keySet()) {
+				/* Verifica cada producao de cada terminal */
+				for (SimboloGLC cabecaOrigem : producoes.keySet()) {
+					/* Para cada producao de cabecaOrigem */
+					if (producoes.get(cabecaOrigem).isEmpty()) {
+						continue;
+					}
+					for (ProducaoGLC producaoAnalisando : producoes.get(cabecaOrigem)) {
+						if (!producaoAnalisando.contemSimbolo(simboloAnalisando.getFirst())) {
+							continue;
+						}
+						for (int posAtual = 0; producaoAnalisando.getSimbolos()
+								.size() > posAtual; posAtual += posAtual) {
+							if (producaoAnalisando.getSimbolos().get(posAtual).getFirst()
+									.equals(simboloAnalisando.getFirst())) {
+								/*
+								 * posAtual é a posicao do simbolo sendo
+								 * analizado dentro da producao
+								 */
+
+								/*
+								 * Primeiro caso: está no fim da produção e
+								 * recebe o follow da cabeça
+								 */
+								if (posAtual + 1 == producaoAnalisando.getSimbolos().size()) {
+									for (SimboloGLC simboloFollowCabeca : cabecaOrigem.obterFollow()) {
+										if (!simboloAnalisando.temNoFollow(simboloFollowCabeca.getFirst())) {
+											mudanca = true;
+											simboloAnalisando.adicionaFollow(simboloFollowCabeca);
+										}
+									}
+								} // Simbolo no fim da prod
+								/*
+								 * Segundo caso Está no meio da producao, e o
+								 * próximo simbolo é um NT que nao vira &
+								 */
+								else if (!producaoAnalisando.getSimbolos().get(posAtual + 1).isTerminal() && (posAtual
+										+ 1 != producaoAnalisando.getSimbolos().size()
+										&& !producaoAnalisando.getSimbolos().get(posAtual + 1).temNoFirst("&"))) {
+									if (producaoAnalisando.getSimbolos().get(posAtual + 1).obterFollow().isEmpty()) {
+										/*
+										 * O proximo simbolo ainda nao tem
+										 * follow, entao que se foda
+										 */
+										continue;
+									}
+									for (SimboloGLC simboloFollowSeguinte : producaoAnalisando.getSimbolos()
+											.get(posAtual + 1).obterFollow()) {
+										if (!simboloAnalisando.temNoFollow(simboloFollowSeguinte)) {
+											mudanca = true;
+											simboloAnalisando.adicionaFollow(simboloFollowSeguinte);
+										}
+									}
+								} // fim do caso de proximo NT sem &
+								/*
+								 * Caso 3 proximo simbolo é um terminal
+								 */
+								else if (producaoAnalisando.getSimbolos().get(posAtual + 1).isTerminal()) {
+									if (!simboloAnalisando
+											.temNoFollow(producaoAnalisando.getSimbolos().get(posAtual + 1))) {
+										mudanca = true;
+										simboloAnalisando
+												.adicionaFollow(producaoAnalisando.getSimbolos().get(posAtual + 1));
+									}
+								} // fim do caso do proximo ser terminal
+
+								/*
+								 * Caso 4 o proximo é um NT que tem & no first
+								 */
+								else if (!producaoAnalisando.getSimbolos().get(posAtual + 1).isTerminal()
+										&& producaoAnalisando.getSimbolos().get(posAtual + 1).temNoFirst("&")) {
+									int posAtualProd = posAtual + 1;
+									while (producaoAnalisando.getSimbolos().get(posAtualProd).temNoFirst("&")
+											&& posAtualProd < producaoAnalisando.getSimbolos().size()) {
+										for (SimboloGLC simboloFirstAnalisado : producaoAnalisando.getSimbolos()
+												.get(posAtualProd).obterFirst()) {
+											if (!simboloAnalisando.temNoFirst(simboloFirstAnalisado)) {
+												mudanca = true;
+											}
+										}
+
+									}
+								}
+							} else
+								continue;
+						}
+					}
+				}
+			}
+		}
+
 	}
 
 	public String getSimboloInicial() {
