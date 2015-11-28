@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class InputOutput {
 
@@ -235,5 +237,64 @@ public class InputOutput {
 		return all;
 
 	}
+	
+	static public HashMap<String,SimboloGLC> letVN(String location){
+		
+		HashMap<String,SimboloGLC> todosVn = new HashMap<String,SimboloGLC>();
+	
+		ArrayList<String> todos= new ArrayList<>();
+	
+		try {
 
+			BufferedReader br = new BufferedReader(new FileReader(location));
+			String fullline = br.readLine();
+			fullline = fullline.trim();
+			
+			while (fullline != null) {
+				String line = "";
+				
+				//Eliminando espaço em branco entre | 
+				for(int i =0;i<fullline.length();i++){
+					if(fullline.charAt(i)!=' '){
+						line+=fullline.charAt(i);
+					}	
+				}
+			
+				
+				if(line.length()>0){	
+					if (line.contains("->")) {
+			
+						String vn="";
+						
+						int pos = line.indexOf("->");
+						vn = line.substring(0, pos);
+					
+
+						if(todosVn.get(vn)==null){
+							todosVn.put(vn, new SimboloGLC(vn, false));
+							todos.add(vn);
+						}
+						
+					}
+					
+				}
+
+				fullline = br.readLine();
+			}
+
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for( String a: todos){
+		//	System.out.println(a);
+		}
+		
+	
+		
+		
+	  return todosVn;
+
+	}
 }
+

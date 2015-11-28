@@ -75,6 +75,7 @@ public class MeuTeste {
 		prod8.add(d);
 		gramatica.adicionaProducao(D, new ProducaoGLC(prod8));
 
+
 		// System.out.println(gramatica.getNaoTerminais());
 		//
 		// System.out.println(gramatica.getProducoes());
@@ -83,6 +84,8 @@ public class MeuTeste {
 		// gramatica.calculaFollow();
 		for (SimboloGLC cabeca : gramatica.getProducoes().keySet()) {
 			System.out.println("First( " + cabeca.getFirst() + " ) = " + cabeca.obterFirst());
+
+		
 		}
 	}
 
