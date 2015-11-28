@@ -20,6 +20,19 @@ public class SimboloGLC extends Pair<String, Boolean> {
 		follow = new ArrayList<>();
 	}
 
+	public void removeFirst(SimboloGLC simbolo) {
+		SimboloGLC simboloRemocao = null;
+		for (SimboloGLC simboloFirst : first) {
+			if (simboloFirst.getFirst().equals(simbolo.getFirst())) {
+				simboloRemocao = simboloFirst;
+			}
+
+		}
+		if (simboloRemocao != null) {
+			first.remove(simboloRemocao);
+		}
+	}
+
 	public void adicionaFirst(SimboloGLC simbolo) {
 		this.first.add(simbolo);
 	}
@@ -33,6 +46,8 @@ public class SimboloGLC extends Pair<String, Boolean> {
 	}
 
 	public boolean temNoFirst(String simbolo) {
+		if (first.isEmpty())
+			return false;
 		for (SimboloGLC simboloFollow : first) {
 			if (simboloFollow.getFirst().equals(simbolo)) {
 				return true;
@@ -42,6 +57,8 @@ public class SimboloGLC extends Pair<String, Boolean> {
 	}
 
 	public boolean temNoFirst(SimboloGLC simbolo) {
+		if (first.isEmpty())
+			return false;
 		for (SimboloGLC simboloFollow : first) {
 			if (simboloFollow.getFirst().equals(simbolo.getFirst())) {
 				return true;
@@ -51,6 +68,8 @@ public class SimboloGLC extends Pair<String, Boolean> {
 	}
 
 	public boolean temNoFollow(String simbolo) {
+		if (follow.isEmpty())
+			return false;
 		for (SimboloGLC simboloFollow : follow) {
 			if (simboloFollow.getFirst().equals(simbolo)) {
 				return true;
@@ -60,6 +79,8 @@ public class SimboloGLC extends Pair<String, Boolean> {
 	}
 
 	public boolean temNoFollow(SimboloGLC simbolo) {
+		if (follow.isEmpty())
+			return false;
 		for (SimboloGLC simboloFollow : follow) {
 			if (simboloFollow.getFirst().equals(simbolo.getFirst())) {
 				return true;
@@ -79,8 +100,10 @@ public class SimboloGLC extends Pair<String, Boolean> {
 	public boolean isTerminal() {
 		return super.getSecond();
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see formais152.Modelo.Pair#toString()
 	 */
 	@Override
@@ -88,21 +111,23 @@ public class SimboloGLC extends Pair<String, Boolean> {
 		// TODO Auto-generated method stub
 		return getSimbolo();
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see formais152.Modelo.Pair#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object other) {
-		
-		if((other instanceof SimboloGLC) && ((SimboloGLC)other).getSimbolo().equals(this.getSimbolo())
-				
-				&& ((SimboloGLC)other).isTerminal() == this.isTerminal()){
+
+		if ((other instanceof SimboloGLC) && ((SimboloGLC) other).getSimbolo().equals(this.getSimbolo())
+
+				&& ((SimboloGLC) other).isTerminal() == this.isTerminal()) {
 			return true;
 		}
-		
+
 		return false;
-		
+
 	}
 
 }

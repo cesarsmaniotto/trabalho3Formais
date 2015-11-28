@@ -13,9 +13,14 @@ public class ProducaoGLC {
 
 	public ProducaoGLC() {
 		simbolos = new ArrayList<>();
+
 	}
-	
-	public ProducaoGLC(ArrayList<SimboloGLC> simbolos){
+
+	public void adicionarSimbolo(SimboloGLC simbolo) {
+		simbolos.add(simbolos.size(), simbolo);
+	}
+
+	public ProducaoGLC(ArrayList<SimboloGLC> simbolos) {
 		this.simbolos = simbolos;
 	}
 
@@ -27,6 +32,7 @@ public class ProducaoGLC {
 		return simbolos;
 	}
 
+	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
 		String saida = "";
@@ -35,8 +41,6 @@ public class ProducaoGLC {
 		}
 		return saida;
 	}
-	
-	
 
 	public boolean contemSimbolo(String simbolo) {
 		for (SimboloGLC simb : simbolos) {
