@@ -72,9 +72,6 @@ public class MeuTeste {
 		prod8.add(d);
 		gramatica.adicionaProducao(D, new ProducaoGLC(prod8));
 		
-//		System.out.println(gramatica.getNaoTerminais());
-//		
-//		System.out.println(gramatica.getProducoes());
 		
 		gramatica.calculaFirst();
 //		gramatica.calculaFollow();
@@ -82,7 +79,7 @@ public class MeuTeste {
 		for(SimboloGLC simbolo : gramatica.getNaoTerminais()){
 			
 			System.out.println("First de "+ simbolo+": " + simbolo.obterFirst() + "\n");
-//			System.out.println("Follow de "+ simbolo+": " + simbolo.obterFollow() + "\n");
+//			System.out.println("Follow de "+ simbolo+": " + simbolo.obterFollow() + "\n");	
 			
 		}
 		

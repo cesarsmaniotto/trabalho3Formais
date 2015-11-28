@@ -22,7 +22,7 @@ public class GramaticaLivreContexto {
 
 	private HashMap<SimboloGLC, List<ProducaoGLC>> producoes;
 	private HashSet<SimboloGLC> simbolosTerminais;
-	private String simboloInicial;
+	private SimboloGLC simboloInicial;
 
 	public GramaticaLivreContexto() {
 		producoes = new HashMap<>();
@@ -211,7 +211,7 @@ public class GramaticaLivreContexto {
 	}
 
 	public void calculaFollow() {
-		if (!simboloInicial.isEmpty()) {
+		if (simboloInicial != null) {
 
 			for (SimboloGLC simbolo : this.producoes.keySet()) {
 				if (simbolo.getFirst().equals(simboloInicial)) {
@@ -349,11 +349,11 @@ public class GramaticaLivreContexto {
 
 	}
 
-	public String getSimboloInicial() {
+	public SimboloGLC getSimboloInicial() {
 		return simboloInicial;
 	}
 
-	public void setSimboloInicial(String cabecaProducao) {
+	public void setSimboloInicial(SimboloGLC cabecaProducao) {
 		simboloInicial = cabecaProducao;
 	}
 
