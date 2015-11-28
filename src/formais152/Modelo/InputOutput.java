@@ -238,22 +238,14 @@ public class InputOutput {
 
 	}
 	
-	static public GramaticaLivreContexto criarGramaticaLivre(String location){
+	static public HashMap<String,SimboloGLC> letVN(String location){
 		
-		GramaticaLivreContexto glc = new GramaticaLivreContexto();
 		HashMap<String,SimboloGLC> todosVn = new HashMap<String,SimboloGLC>();
-		HashMap<String,SimboloGLC> todosVt = new HashMap<String,SimboloGLC>();
-		
-		class Tupla{
-			public String vt;
-			public String vn;
-		}
-		
-		ArrayList<Tupla> allLines = new ArrayList<Tupla>();
-		
+	
+		ArrayList<String> todos= new ArrayList<>();
+	
 		try {
-			
-			
+
 			BufferedReader br = new BufferedReader(new FileReader(location));
 			String fullline = br.readLine();
 			fullline = fullline.trim();
@@ -263,52 +255,27 @@ public class InputOutput {
 				
 				//Eliminando espaço em branco entre | 
 				for(int i =0;i<fullline.length();i++){
-					boolean skip=false;
-					
-					if(i < fullline.length()-1 ){
-						if(fullline.charAt(i+1)=='|' && fullline.charAt(i)==' '){
-							skip=true;
-							
-						}
-					}
-					if( i > 0 ){
-						if( (fullline.charAt(i-1)=='|' || fullline.charAt(i-1)=='>')  && fullline.charAt(i)==' ' ) {
-							skip=true;
-						}
-				
-					}
-					if(!skip){
+					if(fullline.charAt(i)!=' '){
 						line+=fullline.charAt(i);
 					}	
 				}
-				////
+			
 				
 				if(line.length()>0){	
 					if (line.contains("->")) {
 			
 						String vn="";
-						String vt="";
 						
 						int pos = line.indexOf("->");
 						vn = line.substring(0, pos);
-						vt = line.substring(pos + 2);
-						
-						
+					
+
 						if(todosVn.get(vn)==null){
 							todosVn.put(vn, new SimboloGLC(vn, false));
-							todosVt.put(vn, new SimboloGLC(vn, false));
+							todos.add(vn);
 						}
 						
-						Tupla novalinha= new Tupla();
-						novalinha.vn = vn;
-						novalinha.vt = vt;
-						
-						allLines.add(novalinha);
-							
 					}
-					
-					
-			
 					
 				}
 
@@ -319,38 +286,14 @@ public class InputOutput {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		for(Tupla line:allLines){
-			System.out.println(line.vt+"->"+line.vn);
-			
+		for( String a: todos){
+		//	System.out.println(a);
 		}
-		//ArrayList<SimboloGLC> prod = new ArrayList<SimboloGLC>();
-		/*
-		for(int i=0; i<vt.length();i++){
-			char c=   vt.charAt(i);
-			if( c == '|'){
-				glc.adicionaProducao(todosVn.get(vn), new ProducaoGLC(prod));
-				
-				prod = new ArrayList<SimboloGLC>();
-				continue;
-			}
-			
-			String novoVt=""+c;
-			SimboloGLC novaProd = todosVt.get(novoVt);
-			
-			if(todosVt.get( novoVt )==null){
-				todosVt.put(novoVt, new SimboloGLC(novoVt, true) );
-			}
-			
-			prod.add(novaProd);
-			
 		
-			
-			
-		}*/
+	
 		
 		
-		
-	  return null;
+	  return todosVn;
 
 	}
 }
