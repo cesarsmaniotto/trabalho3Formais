@@ -118,6 +118,13 @@ public class AnalisadorSintatico {
 		return pilhaText.equals(lookText);
 
 	}
+	private List<Token> updateTokens(List<Token> list){
+		List<Token> nova;
+		
+		for(Token t: list){
+			
+		}
+	}
 
 	public boolean reconhecerPrograma(List<Token> tokens) {
 
