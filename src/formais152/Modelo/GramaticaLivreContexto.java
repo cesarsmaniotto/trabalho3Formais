@@ -69,6 +69,10 @@ public class GramaticaLivreContexto {
 			SimboloGLC vn = entry.getKey();
 			hasNull.put(vn, false);
 		}
+		for(SimboloGLC g: simbolosTerminais){
+			g.adicionaFirst(g);
+			
+		}
 		/**     */
 		
 		
