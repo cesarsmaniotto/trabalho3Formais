@@ -5,6 +5,7 @@ package formais152;
 
 import java.util.ArrayList;
 
+import formais152.Modelo.FabricaDeAutomatos;
 import formais152.Modelo.GramaticaLivreContexto;
 import formais152.Modelo.ProducaoGLC;
 import formais152.Modelo.SimboloGLC;
@@ -36,7 +37,7 @@ public class MeuTeste {
 		/*
 		 * S - > AbA A -> a | & Fi A = a , & Fi S = a ,b
 		 */
-
+		gramatica.setSimboloInicial(S);
 		ArrayList<SimboloGLC> prod1 = new ArrayList<>();
 		prod1.add(B);
 		prod1.add(A);
@@ -89,15 +90,18 @@ public class MeuTeste {
 		gramatica.adicionaProducao(E, new ProducaoGLC(prod9));
 
 
+	//	gramatica = FabricaDeAutomatos.criarGLC();
+		
 		// System.out.println(gramatica.getNaoTerminais());
 		//
 		// System.out.println(gramatica.getProducoes());
 
 		gramatica.calcularFirst();
-		// gramatica.calculaFollow();
+		gramatica.calculaFollow();
 		for (SimboloGLC cabeca : gramatica.getProducoes().keySet()) {
-			System.out.println("First( " + cabeca.getFirst() + " ) = " + cabeca.obterFirst());
-
+			//System.out.println("First( " + cabeca.getFirst() + " ) = " + cabeca.obterFirst());
+			System.out.println("follow( " + cabeca.getFirst() + " ) = " + cabeca.obterFollow());
+	
 		
 		}
 	}
