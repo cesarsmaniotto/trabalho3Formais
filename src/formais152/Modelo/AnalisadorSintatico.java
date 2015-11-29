@@ -97,6 +97,34 @@ public class AnalisadorSintatico {
 		return tabela.get(naoTerminal).containsKey(terminal);
 
 	}
+	private boolean compararToken(Token pilha, Token look){
+		String pilhaText = pilha.getLexema();
+		String lookText = look.getLexema().toLowerCase();
+		
+		String compare[]={"for","while","if","else"};
+		boolean alce=false;
+		
+		for(int i=0; i<compare.length;i++){
+			if(lookText.equals(compare[i])){
+				alce=true;
+			}
+		}
+		if(alce==true){
+			return pilhaText.equals(lookText);
+		}
+		
+		pilhaText = pilha.getTipoToken().getTipo().toLowerCase();
+		lookText = look.getTipoToken().getTipo().toLowerCase();
+		return pilhaText.equals(lookText);
+
+	}
+	private List<Token> updateTokens(List<Token> list){
+		List<Token> nova;
+		
+		for(Token t: list){
+			
+		}
+	}
 
 	public boolean reconhecerPrograma(List<Token> tokens) {
 

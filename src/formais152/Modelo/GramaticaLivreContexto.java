@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.sun.org.apache.xpath.internal.SourceTree;
@@ -40,245 +41,93 @@ public class GramaticaLivreContexto {
 		return producoes.keySet();
 	}
 
-	public void calculaFirst() {
-
-		/* O first de um terminal sempre é ele mesmo */
-		for (SimboloGLC simboloTerminal : simbolosTerminais) {
-			simboloTerminal.adicionaFirst(simboloTerminal);
+	private boolean copyFirst(SimboloGLC dest, SimboloGLC b){
+		List<SimboloGLC> firstB = b.obterFirst();
+		
+		boolean changed=false;
+		for(int i=0; i<firstB.size(); i++){
+			SimboloGLC g = firstB.get(i);
+			if(!dest.temNoFirst(g)){
+				changed=true;
+				dest.adicionaFirst(g);
+			}
 		}
+		return changed;
+	}
+	
+	public void calcularFirst(){
+		//producoes.size();
+		boolean changed=false;
+		HashMap<SimboloGLC,Boolean> hasNull= new HashMap<SimboloGLC, Boolean>();
 
-		for (SimboloGLC cabecaProd : producoes.keySet()) {
-			List<ProducaoGLC> prods = producoes.get(cabecaProd);
-			for (ProducaoGLC prod : prods) {
-				SimboloGLC simbolo = prod.getSimbolos().get(0);
-				if (simbolo.isTerminal()) {
-					cabecaProd.adicionaFirst(simbolo);
-				}
-			}
-
-		} // Adiciona os casos tipo (t)NT (já comeca com terminal)
-		/*
-		 * Neste caso, tratamos o & como um terminal qualquer. A semântica de
-		 * inserção do mesmo é semelhante a de um não-terminal
+		
+		
+		/**Zera o hasNull por causadessa frecura do java.
+		 *  não aguento mais essa porra de linguagem
 		 */
-
-		// "Até que nao tenha mudancas"
-		// ====================================================================================
-
-		boolean mudanca = true;
-		while (mudanca) {
-			mudanca = false;
-			Set<SimboloGLC> cabecasProd = producoes.keySet();
-			if (cabecasProd.size() < 1) {
-				System.out.println("[WARNING] Calculou First pra gramatica sem cabeca");
-				break;
-			}
-			for (SimboloGLC cabecaProducaoAnalisada : cabecasProd) {
-				List<ProducaoGLC> producoesCabecaAnalisada = producoes.get(cabecaProducaoAnalisada);
-				if (producoesCabecaAnalisada.isEmpty()) {
-					System.out.println("[WARNING] existe uma cabeca de producao sem producoes");
-					continue;
-				}
-				for (ProducaoGLC producaoCabecaAnalisada : producoesCabecaAnalisada) {
-					List<SimboloGLC> simbolosProducaoCabecaAnalisada = producaoCabecaAnalisada.getSimbolos();
-					if (simbolosProducaoCabecaAnalisada.isEmpty()) {
-						System.out.println("[WARNING]Existe uma produção vazia!11!!");
+		for (Map.Entry<SimboloGLC, List<ProducaoGLC>> entry : producoes.entrySet()) {		
+			SimboloGLC vn = entry.getKey();
+			hasNull.put(vn, false);
+		}
+		/**     */
+		
+		
+		//repetir até ninguem mais ter follow novo
+		do{
+			changed = false;
+			// fazer pra cada linha da gramatica
+			for (Map.Entry<SimboloGLC, List<ProducaoGLC>> entry : producoes.entrySet()) {
+				
+				SimboloGLC vn = entry.getKey();
+				List<ProducaoGLC> vtList = entry.getValue();
+				
+				//repetir pra cada producao da gramatica
+				for(int i=0; i<vtList.size() ; i++){
+					
+					List<SimboloGLC> vt = vtList.get(i).getSimbolos();
+					
+					
+					if(vt.size()==0){
+						System.out.println("Producao sem simbolos");
 						continue;
 					}
-					for (SimboloGLC simboloProducaoCabecaAnalisada : simbolosProducaoCabecaAnalisada) {
-
-						if (simboloProducaoCabecaAnalisada.isTerminal()) {
-							if (!cabecaProducaoAnalisada.temNoFirst(simboloProducaoCabecaAnalisada)) {
-								mudanca = true;
-								cabecaProducaoAnalisada.adicionaFirst(simboloProducaoCabecaAnalisada);
-							}
-
-						} else /* n terminal */ {
-
-							if (simboloProducaoCabecaAnalisada.temNoFirst("&")) {
-								/* pode gerar &, entao tem que ir ate o final */
-								int posSimbolo = 0;
-								for (int posicao = 0; posicao < producaoCabecaAnalisada.getSimbolos()
-										.size(); posicao++) {
-									SimboloGLC simboloProdAtual = producaoCabecaAnalisada.getSimbolos().get(posicao);
-									if (simboloProdAtual.getFirst().equals(simboloProducaoCabecaAnalisada.getFirst())) {
-										posSimbolo = posicao;
-
-									}
+					//repetir pra cada simbolo da producao
+					for(int j=0; j<vt.size(); j++){
+						SimboloGLC prod= vt.get(j);
+						
+						if(prod.isTerminal()){
+							if(!vn.temNoFirst(prod)){
+								vn.adicionaFirst(prod);
+								//marca essa produçao contem &
+								if(prod.getFirst().equals("&")){
+									hasNull.put(vn,true );
 								}
-								for (int posicao = posSimbolo; posicao < producaoCabecaAnalisada.getSimbolos()
-										.size(); posicao++) {
-
-									System.out.println("[DEBUG] producaoCabecaAnalisada tem "
-											+ producaoCabecaAnalisada.getSimbolos().size());
-									System.out.println("[DEBUG] posicao é " + posicao);
-									SimboloGLC simboloAtual = producaoCabecaAnalisada.getSimbolos().get(posicao);
-									if (simboloAtual.obterFirst().isEmpty()) {
-										break;
-									}
-									if (simboloAtual.isTerminal()) {
-										if (!cabecaProducaoAnalisada.temNoFirst(simboloAtual.getFirst())) {
-											mudanca = true;
-											cabecaProducaoAnalisada.adicionaFirst(simboloAtual);
-										}
-									} else {
-										if (simboloAtual.temNoFirst("&")) {
-											for (SimboloGLC simboloFirstsimboloAnalisado : simboloAtual.obterFirst()) {
-												if (!cabecaProducaoAnalisada.temNoFirst(simboloFirstsimboloAnalisado)) {
-													mudanca = true;
-													cabecaProducaoAnalisada.adicionaFirst(simboloFirstsimboloAnalisado);
-												}
-											}
-											continue;
-										} else {
-											for (SimboloGLC simboloFirstsimboloAnalisado : simboloAtual.obterFirst()) {
-												if (!cabecaProducaoAnalisada.temNoFirst(simboloFirstsimboloAnalisado)) {
-													mudanca = true;
-													cabecaProducaoAnalisada.adicionaFirst(simboloFirstsimboloAnalisado);
-												}
-											}
-											break;
-										}
-									}
-
-								}
-							} else/* NT sem & */ {
-								for (SimboloGLC simboloFirstSimboloAnalisado : simboloProducaoCabecaAnalisada
-										.obterFirst()) {
-									if (!cabecaProducaoAnalisada.temNoFirst(simboloFirstSimboloAnalisado)) {
-										mudanca = true;
-										cabecaProducaoAnalisada.adicionaFirst(simboloFirstSimboloAnalisado);
-									}
-								}
+								
+								changed=true;
 							}
-						}
-					}
-
-				}
-
-			}
-
-		} // Enquanto houver mudancas
-
-		/*
-		 * Agora, para cada cabeca, verifica se tem uma producao que vai para &
-		 * ou uma cadeia de nt que vai para &
-		 */
-
-		for (SimboloGLC cabecaProducaoAnalisado : producoes.keySet()) {
-			boolean temEpsilon = false;
-			for (ProducaoGLC producaoCabecaAnalisada : producoes.get(cabecaProducaoAnalisado)) {
-
-				if (producaoCabecaAnalisada.getSimbolos().size() == 1) {
-					if (producaoCabecaAnalisada.getSimbolos().get(0).getFirst().equals("&")) {
-						temEpsilon = true;
-					}
-				}
-
-				if (producaoCabecaAnalisada.soNaoTeminais()) {
-					boolean soEpsilon = true;
-					for (int posicao = 0; posicao < producaoCabecaAnalisada.getSimbolos().size(); posicao++) {
-						boolean simboloTemEpsilon = false;
-						SimboloGLC naoTerminalAnalisado = producaoCabecaAnalisada.getSimbolos().get(posicao);
-
-						/* Para cada producao do simbolo da prod */
-						for (ProducaoGLC producaoNaoTerminalAnalisdado : producoes.get(naoTerminalAnalisado)) {
-							if (producaoNaoTerminalAnalisdado.getSimbolos().get(0).getFirst().equals("&")) {
-								simboloTemEpsilon = true;
+							break;
+						}else{
+							
+							//
+							changed= changed || copyFirst(vn , prod) ;				
+				
+							if(hasNull.get(prod)){
+								hasNull.put(vn, true);
+							}else{
+								break;
+								//se Simbolo naoterminao não tem & então paramos de pegar first dos seguintes Simbolos
 							}
+					
 						}
-						if (!simboloTemEpsilon) {
-							soEpsilon = false;
-						}
-
+						
 					}
-					if (soEpsilon) {
-						temEpsilon = true;
-					}
+				
 				}
 			}
-			if (!temEpsilon) {
-				cabecaProducaoAnalisado.removeFirst(new SimboloGLC("&", true));
-			}
-		}
-
-		/*
-		 * } mudanca = false; if (producoes.isEmpty()) { return; } // primeiro
-		 * caso: S-> ABC tal que A,B e C geram &; for (SimboloGLC cabecaProd :
-		 * producoes.keySet()) { if (producoes.get(cabecaProd).isEmpty()) {
-		 * continue; } for (ProducaoGLC producao : producoes.get(cabecaProd)) {
-		 * if (!producao.soNaoTeminais()) { continue; } int firstAntigo =
-		 * cabecaProd.obterFirst().size();
-		 * 
-		 * boolean todoEpsilon = true; // Verifica se todos os símbolos na
-		 * produção tem & no first for (SimboloGLC simbol :
-		 * producao.getSimbolos()) { if (simbol.obterFirst().isEmpty()) { //
-		 * Caso não tenha first continue; } boolean temEpsilon = false; // Para
-		 * cada simbolo no first, ve se tem & for (SimboloGLC
-		 * simboloFirstAnalisado : simbol.obterFirst()) { if
-		 * (simboloFirstAnalisado.getFirst().equals("&")) { temEpsilon = true; }
-		 * } if (!temEpsilon) { todoEpsilon = false;
-		 * 
-		 * }
-		 * 
-		 * } // Aqui, todosEpsilon é true se todos os firsts dos // simbolos da
-		 * producao da cabeça tiverem & if (!todoEpsilon) { // Essa produção não
-		 * entra no caso analizado continue; } else { // Essa producao entrou no
-		 * caso analizado boolean jaTemEspsilon = false; for (SimboloGLC
-		 * simboloFirstCabeca : cabecaProd.obterFirst()) { if
-		 * (simboloFirstCabeca.getFirst().equals("&")) { jaTemEspsilon = true; }
-		 * } if (!jaTemEspsilon) { cabecaProd.adicionaFirst(new SimboloGLC("&",
-		 * true)); mudanca = true; } }
-		 * 
-		 * } } // Para cada cabeça de producao - > fim dos casos ABC com ABC //
-		 * gerando &
-		 * 
-		 * // =================================================
-		 * =================================== // PRIMEIRO CASO OK! //
-		 * =================================================
-		 * ===================================
-		 * 
-		 * // Inicio do caso A->ABaX, em que A e B geram & for (SimboloGLC
-		 * cabecaProd : producoes.keySet()) { if
-		 * (producoes.get(cabecaProd).isEmpty()) { continue; } for (ProducaoGLC
-		 * producao : producoes.get(cabecaProd)) { if
-		 * (producao.getSimbolos().isEmpty()) { continue; } if
-		 * (producao.soNaoTeminais()) { break; } for (Iterator<SimboloGLC> iProd
-		 * = producao.getSimbolos().iterator(); iProd.hasNext();) { SimboloGLC
-		 * simboloProducao = iProd.next(); if (simboloProducao.isTerminal()) {
-		 * // Neste caso, o simbolo é terminal e deve ser // inserido no first
-		 * da cabeça boolean contemSimboloTerminalAnalizado = false; if
-		 * (!cabecaProd.obterFirst().isEmpty()) { for (SimboloGLC
-		 * simboloFirstCabeca : cabecaProd.obterFirst()) { if
-		 * (simboloFirstCabeca.getFirst().equals( simboloProducao.getFirst())) {
-		 * contemSimboloTerminalAnalizado = true; } } if
-		 * (!contemSimboloTerminalAnalizado) { mudanca = true;
-		 * cabecaProd.adicionaFirst(simboloProducao); }
-		 * 
-		 * } } else { // Aqui, o simbolo da producao analizado não é um //
-		 * terminal
-		 * 
-		 * if (simboloProducao.obterFirst().isEmpty()) { continue; } boolean
-		 * epsilonNoFirst = false; for (SimboloGLC simboloFirstProducao :
-		 * simboloProducao.obterFirst()) { if
-		 * (simboloFirstProducao.getFirst().equals("&")) { epsilonNoFirst =
-		 * true; } } if (!epsilonNoFirst) { // Neste caso, é um nao terminal que
-		 * nao tem // & no first. Entao, tira o & do first da // cabeca e une
-		 * com o first desse simbolo for (SimboloGLC simboloFirstProducao :
-		 * simboloProducao.obterFirst()) { if
-		 * (!cabecaProd.obterFirst().contains( simboloFirstProducao)) {
-		 * cabecaProd.adicionaFirst(simboloFirstProducao); mudanca = true; } }
-		 * SimboloGLC epsilonCabeca = null; for (SimboloGLC simboloFirstCabeca :
-		 * cabecaProd.obterFirst()) { if
-		 * (simboloFirstCabeca.getFirst().equals("&")) { epsilonCabeca =
-		 * simboloFirstCabeca; } } if (epsilonCabeca != null) {
-		 * cabecaProd.obterFirst().remove(epsilonCabeca); } } // fim caso NT sem
-		 * &
-		 * 
-		 * } } } } }
-		 */
-
-		// O FIRST ta pronto. os casos 2 e 3 tao misturados
+	
+		}while(changed);
+		
+		
 	}
 
 	private void followRec(SimboloGLC simbolo) {

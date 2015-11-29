@@ -24,11 +24,13 @@ public class MeuTeste {
 		SimboloGLC B = new SimboloGLC("B", false);
 		SimboloGLC C = new SimboloGLC("C", false);
 		SimboloGLC D = new SimboloGLC("D", false);
+		SimboloGLC E = new SimboloGLC("E", false);
 
 		SimboloGLC a = new SimboloGLC("a", true);
 		SimboloGLC b = new SimboloGLC("b", true);
 		SimboloGLC c = new SimboloGLC("c", true);
 		SimboloGLC d = new SimboloGLC("d", true);
+		SimboloGLC e = new SimboloGLC("e", true);
 		SimboloGLC epsilon = new SimboloGLC("&", true);
 
 		/*
@@ -39,7 +41,14 @@ public class MeuTeste {
 		prod1.add(B);
 		prod1.add(A);
 		gramatica.adicionaProducao(S, new ProducaoGLC(prod1));
-
+		
+	
+		ArrayList<SimboloGLC> prodn = new ArrayList<>();
+		prodn.add(A);
+		prodn.add(C);
+		prodn.add(E);
+		gramatica.adicionaProducao(S, new ProducaoGLC(prodn));
+		
 		ArrayList<SimboloGLC> prod2 = new ArrayList<>();
 		prod2.add(a);
 		prod2.add(B);
@@ -75,12 +84,16 @@ public class MeuTeste {
 		prod8.add(d);
 		gramatica.adicionaProducao(D, new ProducaoGLC(prod8));
 
+		ArrayList<SimboloGLC> prod9 = new ArrayList<>();
+		prod9.add(e);
+		gramatica.adicionaProducao(E, new ProducaoGLC(prod9));
+
 
 		// System.out.println(gramatica.getNaoTerminais());
 		//
 		// System.out.println(gramatica.getProducoes());
 
-		gramatica.calculaFirst();
+		gramatica.calcularFirst();
 		// gramatica.calculaFollow();
 		for (SimboloGLC cabeca : gramatica.getProducoes().keySet()) {
 			System.out.println("First( " + cabeca.getFirst() + " ) = " + cabeca.obterFirst());
