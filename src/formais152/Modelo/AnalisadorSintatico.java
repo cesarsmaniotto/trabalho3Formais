@@ -3,6 +3,7 @@
  */
 package formais152.Modelo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,10 +120,12 @@ public class AnalisadorSintatico {
 
 	}
 	private List<Token> updateTokens(List<Token> list){
-		List<Token> nova;
+		List<Token> nova = new ArrayList<>();
 		
 		for(Token t: list){
-			
+			if( !(t.getTipoToken()==TipoToken.PALAVRA_RESERVADA) ){
+				nova.add(t);
+			}
 		}
 	}
 

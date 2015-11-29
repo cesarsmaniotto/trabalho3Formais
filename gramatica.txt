@@ -22,7 +22,7 @@ LINE"->DECL | ATT | FOR | WHILE | IF |& | FUNC;
  
 DECL-> tipo var = VAL ;
 ATT -> var = VAL ; 
-FOR -> for(DECL, VAL , ATT)LINE' 
+FOR -> for(DECL; VAL ; ATT)LINE' 
 WHILE -> while(VAL) LINE'
 IF - > if(VAL)LINE' ELSE 
 ELSE -> else LINE' | &
