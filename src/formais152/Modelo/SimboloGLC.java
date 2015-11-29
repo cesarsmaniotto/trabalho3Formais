@@ -33,6 +33,14 @@ public class SimboloGLC extends Pair<String, Boolean> {
 		}
 	}
 
+	public boolean firstVazio() {
+		return first.isEmpty();
+	}
+
+	public boolean followVazio() {
+		return follow.isEmpty();
+	}
+
 	public void adicionaFirst(SimboloGLC simbolo) {
 		this.first.add(simbolo);
 	}

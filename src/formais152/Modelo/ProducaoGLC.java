@@ -28,6 +28,22 @@ public class ProducaoGLC {
 		simbolos.add(simbolo);
 	}
 
+	public SimboloGLC obterSimbolo(int posicao) {
+		if (posicao - 1 > size() || posicao < 0) {
+			System.out.println("Tentou obter uma posicao inexistente na producao " + simbolos);
+			return null;
+		}
+		return simbolos.get(posicao);
+	}
+
+	public boolean vazia() {
+		return simbolos.isEmpty();
+	}
+
+	public int size() {
+		return simbolos.size();
+	}
+
 	public List<SimboloGLC> getSimbolos() {
 		return simbolos;
 	}

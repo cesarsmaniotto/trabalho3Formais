@@ -28,6 +28,7 @@ public class GramaticaLivreContexto {
 	public GramaticaLivreContexto() {
 		producoes = new HashMap<>();
 		simbolosTerminais = new HashSet<>();
+		simboloInicial = null;
 
 	}
 
@@ -284,111 +285,110 @@ public class GramaticaLivreContexto {
 		// n sei se vou usar isso
 	}
 
+	private boolean existemProducoes() {
+		return !producoes.isEmpty();
+	}
+
+	private List<ProducaoGLC> obterProducoesCabeca(SimboloGLC cabecaProducao) {
+		return producoes.get(cabecaProducao);
+	}
+
+	private Set<SimboloGLC> obterCabecas() {
+		return producoes.keySet();
+	}
+
+	private boolean cabecaSemProducao(SimboloGLC cabecaProducao) {
+		return (producoes.get(cabecaProducao).isEmpty());
+	}
+
 	public void calculaFollow() {
 		if (simboloInicial != null) {
 
 			for (SimboloGLC simbolo : this.producoes.keySet()) {
 				if (simbolo.getFirst().equals(simboloInicial)) {
-					simbolo.adicionaFirst(new SimboloGLC("&", true));
+					simbolo.adicionaFollow(new SimboloGLC("$", true));
 				}
 			}
+		} else {
+			System.out.println("A gramática nao tem simbolo inicial, fodeu tudo.");
+			return;
 		}
 		/* Simbolo de final de pilha inserido no símbolo inicial da gramática */
 		boolean mudanca = true;
 		while (mudanca) {
 			mudanca = false;
-			/*
-			 * primeiro para todos os NT, depois pra todos os T (Pq eu quero,
-			 * não gostou me processa)
-			 */
-			for (SimboloGLC simboloAnalisando : producoes.keySet()) {
-				/* Verifica cada producao de cada terminal */
-				for (SimboloGLC cabecaOrigem : producoes.keySet()) {
-					/* Para cada producao de cabecaOrigem */
-					if (producoes.get(cabecaOrigem).isEmpty()) {
-						continue;
+			if (!existemProducoes()) {
+				System.out.println("nao existem producoes");
+				return;
+			}
+			for (SimboloGLC cabecaProducao : obterCabecas()) {
+				if (cabecaSemProducao(cabecaProducao)) {
+					System.out.println("Existe uma cabeca sem producao ->" + cabecaProducao);
+					return;
+				}
+				for (ProducaoGLC producaoCabecaAnalisada : obterProducoesCabeca(cabecaProducao)) {
+					if (producaoCabecaAnalisada.vazia()) {
+						System.out.println("Existe uma producao vazia em " + cabecaProducao);
 					}
-					for (ProducaoGLC producaoAnalisando : producoes.get(cabecaOrigem)) {
-						if (!producaoAnalisando.contemSimbolo(simboloAnalisando.getFirst())) {
-							continue;
-						}
-						for (int posAtual = 0; producaoAnalisando.getSimbolos()
-								.size() > posAtual; posAtual += posAtual) {
-							if (producaoAnalisando.getSimbolos().get(posAtual).getFirst()
-									.equals(simboloAnalisando.getFirst())) {
-								/*
-								 * posAtual é a posicao do simbolo sendo
-								 * analizado dentro da producao
-								 */
+					for (int posicao = producaoCabecaAnalisada.size() - 1; posicao > 0; posicao--) {
+						SimboloGLC simboloAnalisando = producaoCabecaAnalisada.obterSimbolo(posicao);
 
-								/*
-								 * Primeiro caso: está no fim da produção e
-								 * recebe o follow da cabeça
-								 */
-								if (posAtual + 1 == producaoAnalisando.getSimbolos().size()) {
-									for (SimboloGLC simboloFollowCabeca : cabecaOrigem.obterFollow()) {
-										if (!simboloAnalisando.temNoFollow(simboloFollowCabeca.getFirst())) {
-											mudanca = true;
-											simboloAnalisando.adicionaFollow(simboloFollowCabeca);
-										}
-									}
-								} // Simbolo no fim da prod
-								/*
-								 * Segundo caso Está no meio da producao, e o
-								 * próximo simbolo é um NT que nao vira &
-								 */
-								else if (!producaoAnalisando.getSimbolos().get(posAtual + 1).isTerminal() && (posAtual
-										+ 1 != producaoAnalisando.getSimbolos().size()
-										&& !producaoAnalisando.getSimbolos().get(posAtual + 1).temNoFirst("&"))) {
-									if (producaoAnalisando.getSimbolos().get(posAtual + 1).obterFollow().isEmpty()) {
-										/*
-										 * O proximo simbolo ainda nao tem
-										 * follow, entao que se foda
-										 */
-										continue;
-									}
-									for (SimboloGLC simboloFollowSeguinte : producaoAnalisando.getSimbolos()
-											.get(posAtual + 1).obterFollow()) {
-										if (!simboloAnalisando.temNoFollow(simboloFollowSeguinte)) {
-											mudanca = true;
-											simboloAnalisando.adicionaFollow(simboloFollowSeguinte);
-										}
-									}
-								} // fim do caso de proximo NT sem &
-								/*
-								 * Caso 3 proximo simbolo é um terminal
-								 */
-								else if (producaoAnalisando.getSimbolos().get(posAtual + 1).isTerminal()) {
-									if (!simboloAnalisando
-											.temNoFollow(producaoAnalisando.getSimbolos().get(posAtual + 1))) {
+						/*
+						 * Verifica se é a ultima posição, aí adiciona o follow
+						 * do simbolo da cabeça.
+						 */
+						if (posicao == producaoCabecaAnalisada.size() - 1) {
+							if (cabecaProducao.followVazio()) {
+								continue;
+							} else {
+								for (SimboloGLC simboloNoFollowDaCabeca : cabecaProducao.obterFollow()) {
+									if (!simboloAnalisando.temNoFollow(simboloNoFollowDaCabeca)) {
 										mudanca = true;
-										simboloAnalisando
-												.adicionaFollow(producaoAnalisando.getSimbolos().get(posAtual + 1));
-									}
-								} // fim do caso do proximo ser terminal
-
-								/*
-								 * Caso 4 o proximo é um NT que tem & no first
-								 */
-								else if (!producaoAnalisando.getSimbolos().get(posAtual + 1).isTerminal()
-										&& producaoAnalisando.getSimbolos().get(posAtual + 1).temNoFirst("&")) {
-									int posAtualProd = posAtual + 1;
-									while (producaoAnalisando.getSimbolos().get(posAtualProd).temNoFirst("&")
-											&& posAtualProd < producaoAnalisando.getSimbolos().size()) {
-										for (SimboloGLC simboloFirstAnalisado : producaoAnalisando.getSimbolos()
-												.get(posAtualProd).obterFirst()) {
-											if (!simboloAnalisando.temNoFirst(simboloFirstAnalisado)) {
-												mudanca = true;
-											}
-										}
-
+										simboloAnalisando.adicionaFollow(simboloNoFollowDaCabeca);
 									}
 								}
-							} else
+							}
+						}
+						/* Caso nao seja a ultima producao */
+						for (int posicaoProximos = posicao + 1; posicaoProximos < producaoCabecaAnalisada
+								.size(); posicaoProximos++) {
+							SimboloGLC vizinho = producaoCabecaAnalisada.obterSimbolo(posicaoProximos);
+							if (vizinho.temNoFirst("&")) {
+								/*
+								 * Neste caso, o vizinho pode virar um & e
+								 * xablau
+								 */
+
+								/* Follow (analisado) += first (vizinho) */
+								for (SimboloGLC simboloFirstVizinho : vizinho.obterFirst()) {
+									if (!simboloAnalisando.temNoFollow(simboloFirstVizinho)
+											&& !simboloFirstVizinho.getFirst().equals("&")) {
+										mudanca = true;
+										simboloAnalisando.adicionaFollow(simboloFirstVizinho);
+									}
+								}
 								continue;
+
+							} else {
+								/*
+								 * Caso nao tenha & no first. Entao add o first
+								 * e quebra o for
+								 */
+								/* Follow (analisado) += first (vizinho) */
+								for (SimboloGLC simboloFirstVizinho : vizinho.obterFirst()) {
+									if (!simboloAnalisando.temNoFollow(simboloFirstVizinho)
+											&& !simboloFirstVizinho.getFirst().equals("&")) {
+										mudanca = true;
+										simboloAnalisando.adicionaFollow(simboloFirstVizinho);
+									}
+								}
+								break;
+							}
+
 						}
 					}
 				}
+
 			}
 		}
 
