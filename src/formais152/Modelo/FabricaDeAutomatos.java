@@ -223,6 +223,7 @@ public class FabricaDeAutomatos {
 		SimboloGLC ifvt = new SimboloGLC("if", true);
 		SimboloGLC id = new SimboloGLC("id", true);
 		SimboloGLC pr = new SimboloGLC("pr", true);
+		SimboloGLC tipo = new SimboloGLC("tipo", true);
 		SimboloGLC epsilon = new SimboloGLC("&", true);
 		SimboloGLC whilevt = new SimboloGLC("while", true);
 		SimboloGLC elsevt = new SimboloGLC("else", true);
@@ -230,7 +231,12 @@ public class FabricaDeAutomatos {
 		SimboloGLC stringvt = new SimboloGLC("string", true);
 		SimboloGLC constnum = new SimboloGLC("ctenum", true);
 		SimboloGLC separator = new SimboloGLC("separator", true);
-		SimboloGLC margem = new SimboloGLC("margem", true);
+		//SimboloGLC margem = new SimboloGLC("margem", true);
+		SimboloGLC startP = new SimboloGLC("(",true);
+		SimboloGLC startB = new SimboloGLC("{",true);
+		SimboloGLC endP = new SimboloGLC(")",true);
+		SimboloGLC endB = new SimboloGLC("}",true);
+		
 		SimboloGLC op = new SimboloGLC("op", true);
 		
 	
@@ -241,9 +247,9 @@ public class FabricaDeAutomatos {
 		vn = todosVN.get("S");	
 		prod.add(todosVN.get("MOD"));
 		prod.add(todosVN.get("FUNC2"));
-		prod.add(margem);
+		prod.add(startB);
 		prod.add(todosVN.get("LINE"));
-		prod.add(margem);
+		prod.add(endB);
 		prod.add(todosVN.get("S'"));
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
 		
@@ -261,30 +267,30 @@ public class FabricaDeAutomatos {
 		
 		prod = new ArrayList<>();
 		vn = todosVN.get("MOD");
-		prod.add(pr);
+		prod.add(tipo);
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
 		
 		prod = new ArrayList<>();
 		vn = todosVN.get("MOD");
 		prod.add(pr);
-		prod.add(pr);
+		prod.add(tipo);
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
 		
 
 		prod = new ArrayList<>();
 		vn = todosVN.get("FUNC");
 		prod.add(id);
-		prod.add(margem);
+		prod.add(startP);
 		prod.add(todosVN.get("PAR"));
-		prod.add(margem);
+		prod.add(endP);
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
 		
 		prod = new ArrayList<>();
 		vn = todosVN.get("FUNC2");
 		prod.add(id);
-		prod.add(margem);
+		prod.add(startP);
 		prod.add(todosVN.get("PAR2"));
-		prod.add(margem);
+		prod.add(endP);
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
 		
 		prod = new ArrayList<>();
@@ -311,13 +317,13 @@ public class FabricaDeAutomatos {
 
 		prod = new ArrayList<>();
 		vn = todosVN.get("PAR2'");
-		prod.add(pr);
+		prod.add(tipo);
 		prod.add(todosVN.get("VAL"));
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
 		
 		prod = new ArrayList<>();
 		vn = todosVN.get("PAR2'");
-		prod.add(pr);
+		prod.add(tipo);
 		prod.add(epsilon);
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
 		
@@ -345,9 +351,9 @@ public class FabricaDeAutomatos {
 		
 		prod = new ArrayList<>();
 		vn = todosVN.get("VAL'");
-		prod.add(margem);
+		prod.add(startP);
 		prod.add(todosVN.get("VAL"));
-		prod.add(margem);
+		prod.add(endP);
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
 		
 		prod = new ArrayList<>();
@@ -378,9 +384,9 @@ public class FabricaDeAutomatos {
 
 		prod = new ArrayList<>();
 		vn = todosVN.get("LINE'");
-		prod.add(margem);
+		prod.add(startB);
 		prod.add(todosVN.get("LINE"));
-		prod.add(margem);
+		prod.add(endB);
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
 		
 		prod = new ArrayList<>();
@@ -426,7 +432,7 @@ public class FabricaDeAutomatos {
 
 		prod = new ArrayList<>();
 		vn = todosVN.get("DECL");
-		prod.add(pr);
+		prod.add(tipo);
 		prod.add(id);
 		prod.add(op);
 		prod.add(todosVN.get("VAL"));
@@ -444,13 +450,13 @@ public class FabricaDeAutomatos {
 		prod = new ArrayList<>();
 		vn = todosVN.get("FOR");
 		prod.add(forvt);
-		prod.add(margem);
+		prod.add(startP);
 		prod.add(todosVN.get("DECL"));
 		prod.add(separator);
 		prod.add(todosVN.get("VAL"));
 		prod.add(separator);
 		prod.add(todosVN.get("ATT"));
-		prod.add(margem);
+		prod.add(endP);
 		prod.add(todosVN.get("LINE'"));
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
 
@@ -458,18 +464,18 @@ public class FabricaDeAutomatos {
 		prod = new ArrayList<>();
 		vn = todosVN.get("WHILE");
 		prod.add(whilevt);
-		prod.add(margem);
+		prod.add(startP);
 		prod.add(todosVN.get("VAL"));
-		prod.add(margem);
+		prod.add(endP);
 		prod.add(todosVN.get("LINE'"));
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
 		
 		prod = new ArrayList<>();
 		vn = todosVN.get("IF");
 		prod.add(ifvt);
-		prod.add(margem);
+		prod.add(startP);
 		prod.add(todosVN.get("VAL"));
-		prod.add(margem);
+		prod.add(endP);
 		prod.add(todosVN.get("LINE'"));
 		prod.add(todosVN.get("ELSE"));
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
