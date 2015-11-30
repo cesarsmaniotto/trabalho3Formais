@@ -96,7 +96,7 @@ public class MeuTeste {
 		ArrayList<SimboloGLC> prod7 = new ArrayList<>();
 		prod7.add(c);
 		prod7.add(S);
-		prod7.add(C);
+		prod7.add(c);
 		gramatica.adicionaProducao(D, new ProducaoGLC(prod7));
 		
 		ArrayList<SimboloGLC> prod8 = new ArrayList<>();
