@@ -24,6 +24,10 @@ public class AnalisadorSintatico {
 		this.gramatica = gramatica;
 		constroiTabelaReconhecimentoSintaticoPreditivo();
 	}
+	
+	public Map<String, Map<String, ProducaoGLC>> getTabela(){
+		return tabela;
+	}
 
 	public void constroiTabelaReconhecimentoSintaticoPreditivo() {
 
@@ -33,7 +37,7 @@ public class AnalisadorSintatico {
 					ladoEsquerdo)) {
 
 				if (producao.getSimbolos().size() == 1
-						&& producao.getSimbolos().get(0).equals("&")) {
+						&& producao.getSimbolos().get(0).getSimbolo().equals("&")) {
 
 					for (SimboloGLC followLadoEsquerdo : ladoEsquerdo
 							.obterFollow()) {
@@ -67,6 +71,7 @@ public class AnalisadorSintatico {
 				}
 
 			}
+			
 		}
 	}
 
@@ -127,12 +132,10 @@ public class AnalisadorSintatico {
 		return false;
 	}
 	private List<Token> updateTokens(List<Token> list){
-<<<<<<< HEAD
-		List<Token> nova = null;
-=======
+
 		String[] tipo={"int","double","char","float","void"};
 	
->>>>>>> 8b873df19121f6ae0fb49aa4357425e93680f7c1
+
 		
 		List<Token> nova = new ArrayList<>();	
 		for(Token t: list){
