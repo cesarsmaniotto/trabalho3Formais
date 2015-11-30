@@ -119,11 +119,12 @@ public class AnalisadorSintatico {
 
 	}
 	private List<Token> updateTokens(List<Token> list){
-		List<Token> nova;
+		List<Token> nova = null;
 		
 		for(Token t: list){
 			
 		}
+		return nova;
 	}
 
 	public boolean reconhecerPrograma(List<Token> tokens) {

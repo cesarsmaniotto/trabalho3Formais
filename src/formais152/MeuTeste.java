@@ -26,6 +26,8 @@ public class MeuTeste {
 		SimboloGLC D = new SimboloGLC("D", false);
 		SimboloGLC E = new SimboloGLC("E", false);
 
+		
+		gramatica.setSimboloInicial(S);
 		SimboloGLC a = new SimboloGLC("a", true);
 		SimboloGLC b = new SimboloGLC("b", true);
 		SimboloGLC c = new SimboloGLC("c", true);
@@ -33,71 +35,61 @@ public class MeuTeste {
 		SimboloGLC e = new SimboloGLC("e", true);
 		SimboloGLC epsilon = new SimboloGLC("&", true);
 
+		
+		
+		ProducaoGLC primeira = new ProducaoGLC();
+		primeira.adicionarSimbolo(A);
+		primeira.adicionarSimbolo(B);
+		gramatica.adicionaProducao(S, primeira);
+		
+		ProducaoGLC segunda = new ProducaoGLC();
+		segunda.adicionarSimbolo(A);
+		segunda.adicionarSimbolo(b);
+		gramatica.adicionaProducao(S, segunda);
+		
+		ProducaoGLC terceira = new ProducaoGLC();
+		terceira.adicionarSimbolo(a);
+		terceira.adicionarSimbolo(B);
+		gramatica.adicionaProducao(S, terceira);
+		
+		primeira  = new ProducaoGLC();
+		primeira.adicionarSimbolo(a);
+		primeira.adicionarSimbolo(A);
+		gramatica.adicionaProducao(A, primeira);
+		
+		segunda = new ProducaoGLC();
+		segunda.adicionarSimbolo(epsilon);
+		gramatica.adicionaProducao(A, segunda);
+		
+		primeira = new ProducaoGLC();
+		primeira.adicionarSimbolo(b);
+		primeira.adicionarSimbolo(B);
+		gramatica.adicionaProducao(B, primeira);
+		
+		segunda = new ProducaoGLC();
+		segunda.adicionarSimbolo(epsilon);
+		gramatica.adicionaProducao(B, segunda);
+		
 		/*
 		 * S - > AbA A -> a | & Fi A = a , & Fi S = a ,b
 		 */
 
-		ArrayList<SimboloGLC> prod1 = new ArrayList<>();
-		prod1.add(B);
-		prod1.add(A);
-		gramatica.adicionaProducao(S, new ProducaoGLC(prod1));
-		
 	
-		ArrayList<SimboloGLC> prodn = new ArrayList<>();
-		prodn.add(A);
-		prodn.add(C);
-		prodn.add(E);
-		gramatica.adicionaProducao(S, new ProducaoGLC(prodn));
-		
-		ArrayList<SimboloGLC> prod2 = new ArrayList<>();
-		prod2.add(a);
-		prod2.add(B);
-		prod2.add(A);
-		gramatica.adicionaProducao(A, new ProducaoGLC(prod2));
-
-		ArrayList<SimboloGLC> prod3 = new ArrayList<>();
-		prod3.add(epsilon);
-		gramatica.adicionaProducao(A, new ProducaoGLC(prod3));
-
-		ArrayList<SimboloGLC> prod4 = new ArrayList<>();
-		prod4.add(D);
-		prod4.add(C);
-		gramatica.adicionaProducao(B, new ProducaoGLC(prod4));
-
-		ArrayList<SimboloGLC> prod5 = new ArrayList<>();
-		prod5.add(b);
-		prod5.add(D);
-		prod5.add(C);
-		gramatica.adicionaProducao(C, new ProducaoGLC(prod5));
-
-		ArrayList<SimboloGLC> prod6 = new ArrayList<>();
-		prod6.add(epsilon);
-		gramatica.adicionaProducao(C, new ProducaoGLC(prod6));
-
-		ArrayList<SimboloGLC> prod7 = new ArrayList<>();
-		prod7.add(c);
-		prod7.add(S);
-		prod7.add(C);
-		gramatica.adicionaProducao(D, new ProducaoGLC(prod7));
-
-		ArrayList<SimboloGLC> prod8 = new ArrayList<>();
-		prod8.add(d);
-		gramatica.adicionaProducao(D, new ProducaoGLC(prod8));
-
-		ArrayList<SimboloGLC> prod9 = new ArrayList<>();
-		prod9.add(e);
-		gramatica.adicionaProducao(E, new ProducaoGLC(prod9));
-
 
 		// System.out.println(gramatica.getNaoTerminais());
 		//
 		// System.out.println(gramatica.getProducoes());
 
 		gramatica.calcularFirst();
-		// gramatica.calculaFollow();
+		 gramatica.calculaFollow();
 		for (SimboloGLC cabeca : gramatica.getProducoes().keySet()) {
 			System.out.println("First( " + cabeca.getFirst() + " ) = " + cabeca.obterFirst());
-
+			
+		
+		}
+		for (SimboloGLC cabeca : gramatica.getProducoes().keySet()) {
+			System.out.println("Follow( " + cabeca.getFirst() + " ) = " + cabeca.obterFollow());
+			
 		
 		}
 	}

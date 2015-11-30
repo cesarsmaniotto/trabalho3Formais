@@ -41,93 +41,90 @@ public class GramaticaLivreContexto {
 		return producoes.keySet();
 	}
 
-	private boolean copyFirst(SimboloGLC dest, SimboloGLC b){
+	private boolean copyFirst(SimboloGLC dest, SimboloGLC b) {
 		List<SimboloGLC> firstB = b.obterFirst();
-		
-		boolean changed=false;
-		for(int i=0; i<firstB.size(); i++){
+
+		boolean changed = false;
+		for (int i = 0; i < firstB.size(); i++) {
 			SimboloGLC g = firstB.get(i);
-			if(!dest.temNoFirst(g)){
-				changed=true;
+			if (!dest.temNoFirst(g)) {
+				changed = true;
 				dest.adicionaFirst(g);
 			}
 		}
 		return changed;
 	}
-	
-	public void calcularFirst(){
-		//producoes.size();
-		boolean changed=false;
-		HashMap<SimboloGLC,Boolean> hasNull= new HashMap<SimboloGLC, Boolean>();
 
-		
-		
-		/**Zera o hasNull por causadessa frecura do java.
-		 *  não aguento mais essa porra de linguagem
+	public void calcularFirst() {
+		// producoes.size();
+		boolean changed = false;
+		HashMap<SimboloGLC, Boolean> hasNull = new HashMap<SimboloGLC, Boolean>();
+
+		/**
+		 * Zera o hasNull por causadessa frecura do java. não aguento mais essa
+		 * porra de linguagem
 		 */
-		for (Map.Entry<SimboloGLC, List<ProducaoGLC>> entry : producoes.entrySet()) {		
+		for (Map.Entry<SimboloGLC, List<ProducaoGLC>> entry : producoes.entrySet()) {
 			SimboloGLC vn = entry.getKey();
 			hasNull.put(vn, false);
 		}
 		/**     */
-		
-		
-		//repetir até ninguem mais ter follow novo
-		do{
+
+		// repetir até ninguem mais ter follow novo
+		do {
 			changed = false;
 			// fazer pra cada linha da gramatica
 			for (Map.Entry<SimboloGLC, List<ProducaoGLC>> entry : producoes.entrySet()) {
-				
+
 				SimboloGLC vn = entry.getKey();
 				List<ProducaoGLC> vtList = entry.getValue();
-				
-				//repetir pra cada producao da gramatica
-				for(int i=0; i<vtList.size() ; i++){
-					
+
+				// repetir pra cada producao da gramatica
+				for (int i = 0; i < vtList.size(); i++) {
+
 					List<SimboloGLC> vt = vtList.get(i).getSimbolos();
-					
-					
-					if(vt.size()==0){
+
+					if (vt.size() == 0) {
 						System.out.println("Producao sem simbolos");
 						continue;
 					}
-					//repetir pra cada simbolo da producao
-					for(int j=0; j<vt.size(); j++){
-						SimboloGLC prod= vt.get(j);
-						
-						if(prod.isTerminal()){
-							if(!vn.temNoFirst(prod)){
+					// repetir pra cada simbolo da producao
+					for (int j = 0; j < vt.size(); j++) {
+						SimboloGLC prod = vt.get(j);
+
+						if (prod.isTerminal()) {
+							if (!vn.temNoFirst(prod)) {
 								vn.adicionaFirst(prod);
-								//marca essa produçao contem &
-								if(prod.getFirst().equals("&")){
-									hasNull.put(vn,true );
+								// marca essa produçao contem &
+								if (prod.getFirst().equals("&")) {
+									hasNull.put(vn, true);
 								}
-								
-								changed=true;
+
+								changed = true;
 							}
 							break;
-						}else{
-							
+						} else {
+
 							//
-							changed= changed || copyFirst(vn , prod) ;				
-				
-							if(hasNull.get(prod)){
+							changed = changed || copyFirst(vn, prod);
+
+							if (hasNull.get(prod)) {
 								hasNull.put(vn, true);
-							}else{
+							} else {
 								break;
-								//se Simbolo naoterminao não tem & então paramos de pegar first dos seguintes Simbolos
+								// se Simbolo naoterminao não tem & então
+								// paramos de pegar first dos seguintes Simbolos
 							}
-					
+
 						}
-						
+
 					}
-				
+
 				}
 			}
-	
-		}while(changed);
-		
-		
+
+		} while (changed);
+
 	}
 
 	private void followRec(SimboloGLC simbolo) {
@@ -154,7 +151,7 @@ public class GramaticaLivreContexto {
 		if (simboloInicial != null) {
 
 			for (SimboloGLC simbolo : this.producoes.keySet()) {
-				if (simbolo.getFirst().equals(simboloInicial)) {
+				if (simbolo.getFirst().equals(simboloInicial.getFirst())) {
 					simbolo.adicionaFollow(new SimboloGLC("$", true));
 				}
 			}
@@ -179,7 +176,7 @@ public class GramaticaLivreContexto {
 					if (producaoCabecaAnalisada.vazia()) {
 						System.out.println("Existe uma producao vazia em " + cabecaProducao);
 					}
-					for (int posicao = producaoCabecaAnalisada.size() - 1; posicao > 0; posicao--) {
+					for (int posicao = producaoCabecaAnalisada.size() - 1; posicao >= 0; posicao--) {
 						SimboloGLC simboloAnalisando = producaoCabecaAnalisada.obterSimbolo(posicao);
 
 						/*
@@ -197,43 +194,53 @@ public class GramaticaLivreContexto {
 									}
 								}
 							}
-						}
-						/* Caso nao seja a ultima producao */
-						for (int posicaoProximos = posicao + 1; posicaoProximos < producaoCabecaAnalisada
-								.size(); posicaoProximos++) {
-							SimboloGLC vizinho = producaoCabecaAnalisada.obterSimbolo(posicaoProximos);
-							if (vizinho.temNoFirst("&")) {
-								/*
-								 * Neste caso, o vizinho pode virar um & e
-								 * xablau
-								 */
+						} else {
+							/* Caso nao seja a ultima producao */
+							for (int posicaoProximos = posicao + 1; posicaoProximos < producaoCabecaAnalisada
+									.size(); posicaoProximos++) {
+								SimboloGLC vizinho = producaoCabecaAnalisada.obterSimbolo(posicaoProximos);
+								if (vizinho.temNoFirst("&")) {
+									/*
+									 * Neste caso, o vizinho pode virar um & e
+									 * xablau
+									 */
 
-								/* Follow (analisado) += first (vizinho) */
-								for (SimboloGLC simboloFirstVizinho : vizinho.obterFirst()) {
-									if (!simboloAnalisando.temNoFollow(simboloFirstVizinho)
-											&& !simboloFirstVizinho.getFirst().equals("&")) {
-										mudanca = true;
-										simboloAnalisando.adicionaFollow(simboloFirstVizinho);
+									/* Follow (analisado) += first (vizinho) */
+									for (SimboloGLC simboloFirstVizinho : vizinho.obterFirst()) {
+										if (!simboloAnalisando.temNoFollow(simboloFirstVizinho)
+												&& !simboloFirstVizinho.getFirst().equals("&")) {
+											mudanca = true;
+											simboloAnalisando.adicionaFollow(simboloFirstVizinho);
+										}
 									}
-								}
-								continue;
+									if(posicaoProximos + 1 == producaoCabecaAnalisada.size()){
+										for(SimboloGLC simboloNaCabeca : cabecaProducao.obterFollow()){
+											if(!simboloAnalisando.temNoFollow(simboloNaCabeca)){
+												mudanca = true; 
+												simboloAnalisando.adicionaFollow(simboloNaCabeca);
+											}
+											
+										}
+									}
+									continue;
 
-							} else {
-								/*
-								 * Caso nao tenha & no first. Entao add o first
-								 * e quebra o for
-								 */
-								/* Follow (analisado) += first (vizinho) */
-								for (SimboloGLC simboloFirstVizinho : vizinho.obterFirst()) {
-									if (!simboloAnalisando.temNoFollow(simboloFirstVizinho)
-											&& !simboloFirstVizinho.getFirst().equals("&")) {
-										mudanca = true;
-										simboloAnalisando.adicionaFollow(simboloFirstVizinho);
+								} else {
+									/*
+									 * Caso nao tenha & no first. Entao add o
+									 * first e quebra o for
+									 */
+									/* Follow (analisado) += first (vizinho) */
+									for (SimboloGLC simboloFirstVizinho : vizinho.obterFirst()) {
+										if (!simboloAnalisando.temNoFollow(simboloFirstVizinho)
+												&& !simboloFirstVizinho.getFirst().equals("&")) {
+											mudanca = true;
+											simboloAnalisando.adicionaFollow(simboloFirstVizinho);
+										}
 									}
+									break;
 								}
-								break;
+
 							}
-
 						}
 					}
 				}
