@@ -3,6 +3,7 @@
  */
 package formais152.Modelo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,17 +119,83 @@ public class AnalisadorSintatico {
 		return pilhaText.equals(lookText);
 
 	}
-	private List<Token> updateTokens(List<Token> list){
-		List<Token> nova = null;
+	private boolean belongsto(String word, String[] list){
 		
+		for(int i=0; i<list.length;i++){
+			if(word.equals(list[i]))return true;
+		}
+		return false;
+	}
+	private List<Token> updateTokens(List<Token> list){
+<<<<<<< HEAD
+		List<Token> nova = null;
+=======
+		String[] tipo={"int","double","char","float","void"};
+	
+>>>>>>> 8b873df19121f6ae0fb49aa4357425e93680f7c1
+		
+		List<Token> nova = new ArrayList<>();	
 		for(Token t: list){
+			if(t.getTipoToken()==TipoToken.MARGEM){
+				String s= t.getLexema();
+				if(s.equals("(")){
+					nova.add(new Token(s,TipoToken.STARTP));
+					continue;
+				}
+				if(s.equals(")")){
+					nova.add(new Token(s,TipoToken.ENDP));
+					continue;
+				}
+				if(s.equals("{")){
+					nova.add(new Token(s,TipoToken.STARTB));
+					continue;
+				}
+				if(s.equals("}")){
+					nova.add(new Token(s,TipoToken.ENDB));
+					continue;
+				}
+				System.out.println("Margem não identificada");
+				continue;
+			}
 			
+			if( !(t.getTipoToken()==TipoToken.PALAVRA_RESERVADA) ){
+		
+				nova.add(t);
+			
+			}else{
+				
+				String s= t.getLexema();
+				if(belongsto(s,tipo)){
+					nova.add(new Token(s,TipoToken.TIPO));
+					continue;
+				}
+				if(s.equals("for")){
+					nova.add(new Token(s,TipoToken.FOR));
+					continue;
+				}
+				if(s.equals("while")){
+					nova.add(new Token(s,TipoToken.WHILE));
+					continue;
+				}
+				if(s.equals("if")){
+					nova.add(new Token(s,TipoToken.IF));
+					continue;
+				}
+				if(s.equals("else")){
+					nova.add(new Token(s,TipoToken.ELSE));
+					continue;
+				}
+				nova.add(t);
+				System.out.println("Palavra reservada nào identificada");
+			}
 		}
 		return nova;
 	}
 
 	public boolean reconhecerPrograma(List<Token> tokens) {
 
+		tokens= updateTokens(tokens);
+		
 		Token fimDePilha = new Token("$", TipoToken.FIM_DE_PILHA);
 
 		Stack<String> pilha = new Stack<>();
@@ -139,8 +206,8 @@ public class AnalisadorSintatico {
 
 		for (int i = 0; i < tokens.size(); i++) {
 
-			String ultimoPilha = pilha.peek();
-			String simbLookAhead = tokens.get(i).getTipoToken().getTipo();
+			String ultimoPilha = pilha.peek().toLowerCase();
+			String simbLookAhead = tokens.get(i).getTipoToken().getTipo().toLowerCase();
 
 			if (ultimoPilha.equals(TipoToken.FIM_DE_PILHA)) {
 				return true;
