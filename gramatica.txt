@@ -1,5 +1,5 @@
-S->  MOD FUNC2 { LINE }S'
 S'-> S | &
+S->  MOD FUNC2 { LINE }S'
 MOD -> tipo | mod tipo
 
 FUNC-> var(PAR)

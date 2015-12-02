@@ -244,10 +244,8 @@ public class FabricaDeAutomatos {
 		SimboloGLC vn ;
 		
 		prod= new ArrayList<>();
-		vn = todosVN.get("S'");	
-		
+		vn = todosVN.get("S");	
 		glc.setSimboloInicial(vn);
-		
 		prod.add(todosVN.get("MOD"));
 		prod.add(todosVN.get("FUNC2"));
 		prod.add(startB);
