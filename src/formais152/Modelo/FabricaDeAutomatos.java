@@ -245,7 +245,6 @@ public class FabricaDeAutomatos {
 		
 		prod= new ArrayList<>();
 		vn = todosVN.get("S");	
-		glc.setSimboloInicial(vn);
 		prod.add(todosVN.get("MOD"));
 		prod.add(todosVN.get("FUNC2"));
 		prod.add(startB);
@@ -257,6 +256,7 @@ public class FabricaDeAutomatos {
 		
 		prod = new ArrayList<>();
 		vn = todosVN.get("S'");
+		glc.setSimboloInicial(vn);
 		prod.add(todosVN.get("S"));
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
 		
