@@ -244,7 +244,7 @@ public class FabricaDeAutomatos {
 		SimboloGLC vn ;
 		
 		prod= new ArrayList<>();
-		vn = todosVN.get("S");	
+		vn = todosVN.get("S'");	
 		
 		glc.setSimboloInicial(vn);
 		

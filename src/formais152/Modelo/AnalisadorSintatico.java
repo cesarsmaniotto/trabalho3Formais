@@ -24,40 +24,35 @@ public class AnalisadorSintatico {
 		this.gramatica = gramatica;
 		constroiTabelaReconhecimentoSintaticoPreditivo();
 	}
-	
-	public Map<String, Map<String, ProducaoGLC>> getTabela(){
+
+	public Map<String, Map<String, ProducaoGLC>> getTabela() {
 		return tabela;
 	}
 
 	public void constroiTabelaReconhecimentoSintaticoPreditivo() {
-
+System.out.println("Construção da tabela - NAO TERMINAIS\n" + gramatica.getNaoTerminais());
 		for (SimboloGLC ladoEsquerdo : gramatica.getNaoTerminais()) {
+			
 
-			for (ProducaoGLC producao : gramatica.getProducoes().get(
-					ladoEsquerdo)) {
+			for (ProducaoGLC producao : gramatica.getProducoes().get(ladoEsquerdo)) {
 
-				if (producao.getSimbolos().size() == 1
-						&& producao.getSimbolos().get(0).getSimbolo().equals("&")) {
+				if (producao.getSimbolos().size() == 1 && producao.getSimbolos().get(0).getSimbolo().equals("&")) {
 
-					for (SimboloGLC followLadoEsquerdo : ladoEsquerdo
-							.obterFollow()) {
-						addItemATabela(ladoEsquerdo.getSimbolo(),
-								followLadoEsquerdo.getSimbolo(), producao);
+					for (SimboloGLC followLadoEsquerdo : ladoEsquerdo.obterFollow()) {
+						addItemATabela(ladoEsquerdo.getSimbolo(), followLadoEsquerdo.getSimbolo(), producao);
 					}
 				} else {
 
 					for (SimboloGLC alfa : producao.getSimbolos()) {
 						if (alfa.isTerminal()) {
-							addItemATabela(ladoEsquerdo.getSimbolo(),
-									alfa.getSimbolo(), producao);
+							addItemATabela(ladoEsquerdo.getSimbolo(), alfa.getSimbolo(), producao);
 							break;
 						} else {
 
 							for (SimboloGLC firstAlfa : alfa.obterFirst()) {
 
 								if (!firstAlfa.getSimbolo().equals("&")) {
-									addItemATabela(ladoEsquerdo.getSimbolo(),
-											firstAlfa.getSimbolo(), producao);
+									addItemATabela(ladoEsquerdo.getSimbolo(), firstAlfa.getSimbolo(), producao);
 								}
 
 							}
@@ -71,12 +66,11 @@ public class AnalisadorSintatico {
 				}
 
 			}
-			
+
 		}
 	}
 
-	private void addItemATabela(String naoTerminal, String terminal,
-			ProducaoGLC producao) {
+	private void addItemATabela(String naoTerminal, String terminal, ProducaoGLC producao) {
 
 		if (!tabela.containsKey(naoTerminal)) {
 			tabela.put(naoTerminal, new HashMap<String, ProducaoGLC>());
@@ -89,7 +83,7 @@ public class AnalisadorSintatico {
 	}
 
 	private boolean isTerminal(String simbolo) {
-		return !tabela.containsKey(simbolo);
+		return tabela.containsKey(simbolo.toUpperCase());
 	}
 
 	private ProducaoGLC getItemTabela(String naoTerminal, String terminal) {
@@ -103,89 +97,91 @@ public class AnalisadorSintatico {
 		return tabela.get(naoTerminal).containsKey(terminal);
 
 	}
-	private boolean compararToken(Token pilha, Token look){
+
+	private boolean compararToken(Token pilha, Token look) {
 		String pilhaText = pilha.getLexema();
 		String lookText = look.getLexema().toLowerCase();
-		
-		String compare[]={"for","while","if","else"};
-		boolean alce=false;
-		
-		for(int i=0; i<compare.length;i++){
-			if(lookText.equals(compare[i])){
-				alce=true;
+
+		String compare[] = { "for", "while", "if", "else" };
+		boolean alce = false;
+
+		for (int i = 0; i < compare.length; i++) {
+			if (lookText.equals(compare[i])) {
+				alce = true;
 			}
 		}
-		if(alce==true){
+		if (alce == true) {
 			return pilhaText.equals(lookText);
 		}
-		
+
 		pilhaText = pilha.getTipoToken().getTipo().toLowerCase();
 		lookText = look.getTipoToken().getTipo().toLowerCase();
 		return pilhaText.equals(lookText);
 
 	}
-	private boolean belongsto(String word, String[] list){
-		
-		for(int i=0; i<list.length;i++){
-			if(word.equals(list[i]))return true;
+
+	private boolean belongsTo(String word, String[] list) {
+
+		for (int i = 0; i < list.length; i++) {
+			if (word.equals(list[i]))
+				return true;
 		}
 		return false;
 	}
-	private List<Token> updateTokens(List<Token> list){
 
-		String[] tipo={"int","double","char","float","void"};
-	
+	private List<Token> updateTokens(List<Token> list) {
 
-		
-		List<Token> nova = new ArrayList<>();	
-		for(Token t: list){
-			if(t.getTipoToken()==TipoToken.MARGEM){
-				String s= t.getLexema();
-				if(s.equals("(")){
-					nova.add(new Token(s,TipoToken.STARTP));
+		String[] tipo = { "int", "double", "char", "float", "void" };
+
+		List<Token> nova = new ArrayList<>();
+		for (Token t : list) {
+			if (t.getTipoToken() == TipoToken.MARGEM) {
+				String s = t.getLexema();
+				if (s.equals("(")) {
+					nova.add(new Token(s, TipoToken.STARTP));
 					continue;
 				}
-				if(s.equals(")")){
-					nova.add(new Token(s,TipoToken.ENDP));
+				if (s.equals(")")) {
+					nova.add(new Token(s, TipoToken.ENDP));
 					continue;
 				}
-				if(s.equals("{")){
-					nova.add(new Token(s,TipoToken.STARTB));
+				if (s.equals("{")) {
+					nova.add(new Token(s, TipoToken.STARTB));
 					continue;
 				}
-				if(s.equals("}")){
-					nova.add(new Token(s,TipoToken.ENDB));
+				if (s.equals("}")) {
+					nova.add(new Token(s, TipoToken.ENDB));
 					continue;
 				}
 				System.out.println("Margem não identificada");
 				continue;
 			}
-			
-			if( !(t.getTipoToken()==TipoToken.PALAVRA_RESERVADA) ){
-		
+
+			if (!(t.getTipoToken() == TipoToken.PALAVRA_RESERVADA)) {
+
 				nova.add(t);
-			
-			}else{
-				
-				String s= t.getLexema();
-				if(belongsto(s,tipo)){
-					nova.add(new Token(s,TipoToken.TIPO));
+
+			} else {
+
+				String s = t.getLexema();
+				if (belongsTo(s, tipo)) {
+					nova.add(new Token(s, TipoToken.TIPO));
 					continue;
 				}
-				if(s.equals("for")){
-					nova.add(new Token(s,TipoToken.FOR));
+				if (s.equals("for")) {
+					nova.add(new Token(s, TipoToken.FOR));
 					continue;
 				}
-				if(s.equals("while")){
-					nova.add(new Token(s,TipoToken.WHILE));
+				if (s.equals("while")) {
+					nova.add(new Token(s, TipoToken.WHILE));
 					continue;
 				}
-				if(s.equals("if")){
-					nova.add(new Token(s,TipoToken.IF));
+				if (s.equals("if")) {
+					nova.add(new Token(s, TipoToken.IF));
 					continue;
 				}
-				if(s.equals("else")){
-					nova.add(new Token(s,TipoToken.ELSE));
+				if (s.equals("else")) {
+					nova.add(new Token(s, TipoToken.ELSE));
 					continue;
 				}
 				nova.add(t);
@@ -197,15 +193,30 @@ public class AnalisadorSintatico {
 
 	public boolean reconhecerPrograma(List<Token> tokens) {
 
-		tokens= updateTokens(tokens);
-		
+		tokens = updateTokens(tokens);
+		this.constroiTabelaReconhecimentoSintaticoPreditivo();
 		Token fimDePilha = new Token("$", TipoToken.FIM_DE_PILHA);
 
 		Stack<String> pilha = new Stack<>();
 
 		tokens.add(fimDePilha);
 		pilha.push(fimDePilha.getTipoToken().getTipo());
-		// TODO colocar simbolo inicial no topo da pilha
+		
+		
+		
+		
+		SimboloGLC inicial = gramatica.getSimboloInicial();
+		if(tabela.keySet().contains(inicial.getFirst().toLowerCase())){
+			System.out.println("Achou o inicial " + inicial);
+		}else{
+			System.out.println("nao achou o inicial " + inicial + " tem só \n\n" + tabela.keySet());
+			
+			
+			return false;
+		}
+		pilha.push(inicial.getFirst());
+		
+		
 
 		for (int i = 0; i < tokens.size(); i++) {
 
@@ -220,16 +231,17 @@ public class AnalisadorSintatico {
 				if (ultimoPilha.equals(simbLookAhead)) {
 					pilha.pop();
 				} else {
-					throw new ErroSintaticoException("Erro sintático");
+					throw new ErroSintaticoException(
+							"Erro sintático: esperava-se " + simbLookAhead + " e tinha " + ultimoPilha);
 				}
 			} else {
-				if(!existeItemTabela(ultimoPilha, simbLookAhead)){
+				if (!existeItemTabela(ultimoPilha, simbLookAhead)) {
 					throw new ErroSintaticoException("Erro sintático");
-				}else{
+				} else {
 					pilha.pop();
 					ProducaoGLC prodTabela = getItemTabela(ultimoPilha, simbLookAhead);
-					
-					for(SimboloGLC simbolo : prodTabela.obterInverso()){
+
+					for (SimboloGLC simbolo : prodTabela.obterInverso()) {
 						pilha.push(simbolo.getSimbolo());
 					}
 				}
