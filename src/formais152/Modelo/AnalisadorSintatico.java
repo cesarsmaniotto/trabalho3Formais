@@ -30,9 +30,8 @@ public class AnalisadorSintatico {
 	}
 
 	public void constroiTabelaReconhecimentoSintaticoPreditivo() {
-System.out.println("Construção da tabela - NAO TERMINAIS\n" + gramatica.getNaoTerminais());
+		System.out.println("Construção da tabela - NAO TERMINAIS\n" + gramatica.getNaoTerminais());
 		for (SimboloGLC ladoEsquerdo : gramatica.getNaoTerminais()) {
-			
 
 			for (ProducaoGLC producao : gramatica.getProducoes().get(ladoEsquerdo)) {
 
@@ -201,22 +200,16 @@ System.out.println("Construção da tabela - NAO TERMINAIS\n" + gramatica.getNao
 
 		tokens.add(fimDePilha);
 		pilha.push(fimDePilha.getTipoToken().getTipo());
-		
-		
-		
-		
+
 		SimboloGLC inicial = gramatica.getSimboloInicial();
-		if(tabela.keySet().contains(inicial.getFirst().toLowerCase())){
+		if (tabela.keySet().contains(inicial.getFirst().toLowerCase())) {
 			System.out.println("Achou o inicial " + inicial);
-		}else{
+		} else {
 			System.out.println("nao achou o inicial " + inicial + " tem só \n\n" + tabela.keySet());
-			
-			
+
 			return false;
 		}
 		pilha.push(inicial.getFirst());
-		
-		
 
 		for (int i = 0; i < tokens.size(); i++) {
 
