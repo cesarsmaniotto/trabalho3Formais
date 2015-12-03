@@ -8,14 +8,15 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import jdk.nashorn.internal.parser.Token;
 import formais152.Modelo.AnalisadorLexico;
 import formais152.Modelo.AnalisadorSintatico;
 import formais152.Modelo.FabricaDeAutomatos;
+import formais152.Modelo.GramaticaLivreContexto;
 import formais152.Modelo.InputOutput;
 import formais152.Modelo.Pair;
 import formais152.Modelo.TabelaDeSimbolos;
 import formais152.Modelo.TipoToken;
+import formais152.Modelo.Token;
 
 /**
  * @author cesar
@@ -43,24 +44,31 @@ public class mainT2 {
 		JOptionPane.showConfirmDialog(null, "programa.txt Vai ser compilado");
 
 		String input = "programa.txt";
-		input = InputOutput.readFile(input);
+    	input = InputOutput.readFile(input);
+    //	System.out.println(input);
 
 		analisadorLex.montaTabelaDeSimbolos(input);
-		// anal.montaTabelaDeSimbolos("int a = 3 ; if ( a > 1 ) { a = 1 ; } else
-		// { a = 2 } double b = a + 4 * 2 ; char s = \"stringsemespacos\" ;");
-
-		List<formais152.Modelo.Token> tokens = tabela.getTokens();
+		
+	
+		List<Token> tokens = tabela.getTokens();
 		tokens.remove(tokens.size() - 1);
-
+		for( Token a:tokens ){
+		//	System.out.println(a);
+		}
+		
+		
 		String output = "";
 		for (Pair<String, TipoToken> p : tabela.getTokens()) {
 			output += p.toString();
 			output += "\n";
 		}
 		InputOutput.writeToFile(output, "output.txt");
-		System.out.println(output);
+		//System.out.println(output);
 
-		AnalisadorSintatico analisadorSint = new AnalisadorSintatico(FabricaDeAutomatos.criarGLC());
+		GramaticaLivreContexto glc =FabricaDeAutomatos.criarGLC();
+		glc.calcularFirst();
+		glc.calculaFollow();
+		AnalisadorSintatico analisadorSint = new AnalisadorSintatico( glc);
 
 		System.out.println((analisadorSint.reconhecerPrograma(tokens)) ? "deu" : "n deu");
 

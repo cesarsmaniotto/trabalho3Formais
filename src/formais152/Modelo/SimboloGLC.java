@@ -13,6 +13,8 @@ import java.util.List;
 public class SimboloGLC extends Pair<String, Boolean> {
 
 	private List<SimboloGLC> first, follow;
+	
+	public boolean hasEpsilon = false;
 
 	public SimboloGLC(String simbolos, Boolean isTerminal) {
 		super(simbolos, isTerminal);
