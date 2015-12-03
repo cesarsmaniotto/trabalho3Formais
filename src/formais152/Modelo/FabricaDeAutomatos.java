@@ -236,6 +236,7 @@ public class FabricaDeAutomatos {
 		SimboloGLC startB = new SimboloGLC("{",true);
 		SimboloGLC endP = new SimboloGLC(")",true);
 		SimboloGLC endB = new SimboloGLC("}",true);
+		SimboloGLC returnvt = new SimboloGLC("return",true);
 		
 		SimboloGLC op = new SimboloGLC("op", true);
 		
@@ -386,6 +387,7 @@ public class FabricaDeAutomatos {
 		prod = new ArrayList<>();
 		vn = todosVN.get("VAL\"");
 		prod.add(id);
+		prod.add(todosVN.get("B'"));
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
 		
 		prod = new ArrayList<>();
@@ -402,6 +404,19 @@ public class FabricaDeAutomatos {
 		vn = todosVN.get("VAL\"");
 		prod.add(todosVN.get("FUNC"));
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
+		
+		prod = new ArrayList<>();
+		vn = todosVN.get("B'");
+		prod.add(startP);
+		prod.add(todosVN.get("PAR"));
+		prod.add(endP);
+		glc.adicionaProducao(vn, new ProducaoGLC(prod));
+		
+		prod = new ArrayList<>();
+		vn = todosVN.get("B'");
+		prod.add(epsilon);
+		glc.adicionaProducao(vn, new ProducaoGLC(prod));
+		
 		
 		prod = new ArrayList<>();
 		vn = todosVN.get("LINE");
@@ -454,8 +469,14 @@ public class FabricaDeAutomatos {
 		
 		prod = new ArrayList<>();
 		vn = todosVN.get("LINE\"");
+		prod.add(todosVN.get("RET"));
+		glc.adicionaProducao(vn, new ProducaoGLC(prod));
+		
+		prod = new ArrayList<>();
+		vn = todosVN.get("LINE\"");
 		prod.add(epsilon);
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
+		
 
 		prod = new ArrayList<>();
 		vn = todosVN.get("DECL");
@@ -529,6 +550,13 @@ public class FabricaDeAutomatos {
 		prod = new ArrayList<>();
 		vn = todosVN.get("ELSE");
 		prod.add(epsilon);
+		glc.adicionaProducao(vn, new ProducaoGLC(prod));
+		
+		prod = new ArrayList<>();
+		vn = todosVN.get("RET");
+		prod.add(returnvt);
+		prod.add(todosVN.get("VAL"));
+		prod.add(separator);
 		glc.adicionaProducao(vn, new ProducaoGLC(prod));
 
 		

@@ -14,11 +14,12 @@ PAR2'-> ; tipo id PAR2' | &
 VAL -> VAL' B
 B-> oper VAL' |   VAL' | &
 VAL' -> VAL" | (VAL)
-VAL"-> id | string | constNumerica | FUNC
+VAL"-> idB' | string | constNumerica 
+B'-> (PAR) | &
 
 LINE -> LINE'LINE | 
 LINE'-> {LINE} | LINE"
-LINE"->DECL | ATT | FOR | WHILE | IF |& | FUNC;
+LINE"->DECL | ATT | FOR | WHILE | IF |& | FUNC; | RET
  
 DECL-> tipo id = VAL ;
 ATT -> id = VAL ; 
@@ -27,5 +28,5 @@ F -> tipo | &
 WHILE -> while(VAL) LINE'
 IF - > if(VAL)LINE' ELSE 
 ELSE -> else LINE' | &
-
+RET -> return VAl ;
 

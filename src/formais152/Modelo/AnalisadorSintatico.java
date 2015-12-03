@@ -108,7 +108,7 @@ public class AnalisadorSintatico {
 
 	private List<Token> updateTokens(List<Token> list) {
 
-		String[] tipo = { "int", "double", "char", "float", "void" };
+		String[] tipo = { "int", "double", "char", "float", "void", "bool","string" };
 
 		List<Token> nova = new ArrayList<>();
 		for (Token t : list) {
@@ -168,6 +168,10 @@ public class AnalisadorSintatico {
 					nova.add(new Token(s, TipoToken.ELSE));
 					continue;
 				}
+				if(s.equals("return")){
+					nova.add(new Token(s, TipoToken.RETURN));
+					continue;
+				}
 				nova.add(t);
 				System.out.println("Palavra reservada nào identificada");
 			}
@@ -177,7 +181,9 @@ public class AnalisadorSintatico {
 
 	public boolean reconhecerPrograma(List<Token> tokens) {
 
+		
 		tokens = updateTokens(tokens);
+		
 		this.constroiTabelaReconhecimentoSintaticoPreditivo();
 		Token fimDePilha = new Token("$", TipoToken.FIM_DE_PILHA);
 		
@@ -202,12 +208,12 @@ public class AnalisadorSintatico {
 		pilha.push(inicial.getFirst());
 		
 		
-
+	
 		for (int i = 0; i < tokens.size(); ) {
 			
 			String ultimoPilha = pilha.peek();
 			String simbLookAhead = tokens.get(i).getTipoToken().getTipo().toLowerCase();
-			if (i==43) {
+			if (i==18) {
 				int donothing=5;
 				int b =donothing;
 			}
@@ -223,7 +229,7 @@ public class AnalisadorSintatico {
 
 			else if (isTerminal(ultimoPilha)) {
 				if (ultimoPilha.equals(simbLookAhead.toLowerCase())) {
-			
+				//	System.out.println("achou "+ultimoPilha);
 					
 					pilha.pop();
 					i++;
