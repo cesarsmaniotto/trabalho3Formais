@@ -2,27 +2,28 @@ S'-> S | &
 S->  MOD FUNC2 { LINE }S'
 MOD -> tipo | mod tipo
 
-FUNC-> var(PAR)
-FUNC2->var(PAR2)
+FUNC-> id(PAR) 
+FUNC2->id(PAR2)
 
-PAR -> PAR'PAR
-PAR'-> VAL | &
+PAR ->VALPAR' | &
+PAR'-> ;VAL PAR' |&
 
-PAR2 -> PAR2'PAR2
-PAR2'-> tipo VAL | &
+PAR2 ->  tipo id PAR2'  | &
+PAR2'-> ; tipo id PAR2' | &
 
 VAL -> VAL' B
-B-> oper VAL' |   VAL'
+B-> oper VAL' |   VAL' | &
 VAL' -> VAL" | (VAL)
-VAL"-> var | string | constNumerica | FUNC
+VAL"-> id | string | constNumerica | FUNC
 
 LINE -> LINE'LINE | 
 LINE'-> {LINE} | LINE"
 LINE"->DECL | ATT | FOR | WHILE | IF |& | FUNC;
  
-DECL-> tipo var = VAL ;
-ATT -> var = VAL ; 
-FOR -> for(DECL; VAL ; ATT)LINE' 
+DECL-> tipo id = VAL ;
+ATT -> id = VAL ; 
+FOR -> for(F ATT VAL ; id op VAL)LINE'
+F -> tipo | &
 WHILE -> while(VAL) LINE'
 IF - > if(VAL)LINE' ELSE 
 ELSE -> else LINE' | &

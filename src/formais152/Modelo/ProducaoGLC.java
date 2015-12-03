@@ -82,7 +82,7 @@ public class ProducaoGLC {
 			System.out.println("[WARNING] INVERSO DE PRODUCAO VAZIA!");
 			return new ArrayList<>();
 		}
-		for (int i = simbolos.size() - 1; i >= 0; i++) {
+		for (int i = simbolos.size() - 1; i >= 0; i--) {
 			retorno.add(simbolos.get(i));
 		}
 		return retorno;

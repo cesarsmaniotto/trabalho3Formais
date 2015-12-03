@@ -64,10 +64,7 @@ public class GramaticaLivreContexto {
 		 * Zera o hasNull por causadessa frecura do java. não aguento mais essa
 		 * porra de linguagem
 		 */
-		for (Map.Entry<SimboloGLC, List<ProducaoGLC>> entry : producoes.entrySet()) {
-			SimboloGLC vn = entry.getKey();
-			hasNull.put(vn, false);
-		}
+		
 		for(SimboloGLC g: simbolosTerminais){
 			g.adicionaFirst(g);
 			
@@ -101,6 +98,7 @@ public class GramaticaLivreContexto {
 								vn.adicionaFirst(prod);
 								// marca essa produçao contem &
 								if (prod.getFirst().equals("&")) {
+									vn.hasEpsilon = true;
 									hasNull.put(vn, true);
 								}
 
@@ -112,8 +110,8 @@ public class GramaticaLivreContexto {
 							//
 							changed = changed || copyFirst(vn, prod);
 
-							if (hasNull.get(prod)) {
-								hasNull.put(vn, true);
+							if (prod.hasEpsilon == true ) {
+								vn.hasEpsilon = true;
 							} else {
 								break;
 								// se Simbolo naoterminao não tem & então
@@ -256,6 +254,15 @@ public class GramaticaLivreContexto {
 
 	public SimboloGLC getSimboloInicial() {
 		return simboloInicial;
+	}
+	public SimboloGLC getSimbolo(String var){
+		
+		for (Map.Entry<SimboloGLC, List<ProducaoGLC>> entry : producoes.entrySet()) {
+			SimboloGLC vn = entry.getKey();
+			String txt = vn.getFirst();
+			if(var.equals(txt) )return vn ;
+		}
+		return null;
 	}
 
 	public void setSimboloInicial(SimboloGLC cabecaProducao) {

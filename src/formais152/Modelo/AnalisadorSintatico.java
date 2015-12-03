@@ -30,12 +30,9 @@ public class AnalisadorSintatico {
 	}
 
 	public void constroiTabelaReconhecimentoSintaticoPreditivo() {
-System.out.println("Construção da tabela - NAO TERMINAIS\n" + gramatica.getNaoTerminais());
 		for (SimboloGLC ladoEsquerdo : gramatica.getNaoTerminais()) {
-			
-
 			for (ProducaoGLC producao : gramatica.getProducoes().get(ladoEsquerdo)) {
-
+				
 				if (producao.getSimbolos().size() == 1 && producao.getSimbolos().get(0).getSimbolo().equals("&")) {
 
 					for (SimboloGLC followLadoEsquerdo : ladoEsquerdo.obterFollow()) {
@@ -52,9 +49,9 @@ System.out.println("Construção da tabela - NAO TERMINAIS\n" + gramatica.getNao
 							for (SimboloGLC firstAlfa : alfa.obterFirst()) {
 
 								if (!firstAlfa.getSimbolo().equals("&")) {
-									addItemATabela(ladoEsquerdo.getSimbolo(), firstAlfa.getSimbolo(), producao);
+								addItemATabela(ladoEsquerdo.getSimbolo(), firstAlfa.getSimbolo(), producao);
 								}
-
+ 
 							}
 
 							if (!alfa.temNoFirst("&")) {
@@ -83,7 +80,7 @@ System.out.println("Construção da tabela - NAO TERMINAIS\n" + gramatica.getNao
 	}
 
 	private boolean isTerminal(String simbolo) {
-		return tabela.containsKey(simbolo.toUpperCase());
+		return !tabela.containsKey(simbolo);
 	}
 
 	private ProducaoGLC getItemTabela(String naoTerminal, String terminal) {
@@ -98,27 +95,7 @@ System.out.println("Construção da tabela - NAO TERMINAIS\n" + gramatica.getNao
 
 	}
 
-	private boolean compararToken(Token pilha, Token look) {
-		String pilhaText = pilha.getLexema();
-		String lookText = look.getLexema().toLowerCase();
-
-		String compare[] = { "for", "while", "if", "else" };
-		boolean alce = false;
-
-		for (int i = 0; i < compare.length; i++) {
-			if (lookText.equals(compare[i])) {
-				alce = true;
-			}
-		}
-		if (alce == true) {
-			return pilhaText.equals(lookText);
-		}
-
-		pilhaText = pilha.getTipoToken().getTipo().toLowerCase();
-		lookText = look.getTipoToken().getTipo().toLowerCase();
-		return pilhaText.equals(lookText);
-
-	}
+	
 
 	private boolean belongsTo(String word, String[] list) {
 
@@ -155,6 +132,13 @@ System.out.println("Construção da tabela - NAO TERMINAIS\n" + gramatica.getNao
 				}
 				System.out.println("Margem não identificada");
 				continue;
+			}
+			if(t.getTipoToken() == TipoToken.ERRO){
+				String s = t.getLexema();
+				if(s.length()==0)continue;
+				if(s.equals(" "))continue;
+				if(s.equals("\n"))continue;
+				
 			}
 
 			if (!(t.getTipoToken() == TipoToken.PALAVRA_RESERVADA)) {
@@ -196,7 +180,7 @@ System.out.println("Construção da tabela - NAO TERMINAIS\n" + gramatica.getNao
 		tokens = updateTokens(tokens);
 		this.constroiTabelaReconhecimentoSintaticoPreditivo();
 		Token fimDePilha = new Token("$", TipoToken.FIM_DE_PILHA);
-
+		
 		Stack<String> pilha = new Stack<>();
 
 		tokens.add(fimDePilha);
@@ -206,8 +190,9 @@ System.out.println("Construção da tabela - NAO TERMINAIS\n" + gramatica.getNao
 		
 		
 		SimboloGLC inicial = gramatica.getSimboloInicial();
-		if(tabela.keySet().contains(inicial.getFirst().toLowerCase())){
-			System.out.println("Achou o inicial " + inicial);
+		String alce= inicial.getFirst();
+		if(tabela.keySet().contains(alce)){
+		//	System.out.println("Achou o inicial " + inicial);
 		}else{
 			System.out.println("nao achou o inicial " + inicial + " tem só \n\n" + tabela.keySet());
 			
@@ -218,24 +203,42 @@ System.out.println("Construção da tabela - NAO TERMINAIS\n" + gramatica.getNao
 		
 		
 
-		for (int i = 0; i < tokens.size(); i++) {
-
-			String ultimoPilha = pilha.peek().toLowerCase();
+		for (int i = 0; i < tokens.size(); ) {
+			
+			String ultimoPilha = pilha.peek();
 			String simbLookAhead = tokens.get(i).getTipoToken().getTipo().toLowerCase();
-
-			if (ultimoPilha.equals(TipoToken.FIM_DE_PILHA)) {
+			if (i==43) {
+				int donothing=5;
+				int b =donothing;
+			}
+			if (ultimoPilha.equals("&")) {
+				pilha.pop();
+				continue;
+			}
+			
+			
+			if (ultimoPilha.equals(TipoToken.FIM_DE_PILHA.toString())) {
 				return true;
 			}
 
 			else if (isTerminal(ultimoPilha)) {
-				if (ultimoPilha.equals(simbLookAhead)) {
+				if (ultimoPilha.equals(simbLookAhead.toLowerCase())) {
+			
+					
 					pilha.pop();
+					i++;
 				} else {
 					throw new ErroSintaticoException(
 							"Erro sintático: esperava-se " + simbLookAhead + " e tinha " + ultimoPilha);
 				}
 			} else {
 				if (!existeItemTabela(ultimoPilha, simbLookAhead)) {
+					if(gramatica.getSimbolo(ultimoPilha).hasEpsilon){
+						//se simbolo não tem valor na tabela mas pode gerar episilon enTao ele vai vazer isso
+						pilha.pop();
+						continue;
+					}
+		
 					throw new ErroSintaticoException("Erro sintático");
 				} else {
 					pilha.pop();
